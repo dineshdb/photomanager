@@ -16,14 +16,13 @@ These instructions will get you a copy of the project up and running on your loc
 
 What things you need to install the software and how to install them
 
-```
-opencv
-QT
-```
+* opencv
+* QT
 
 ### Installing
 * Clone this repo using `git clone <repo_url>`
 * Enter into the repo directory.
+* Type `make prepare` to install all the dependencies required for compiling this project.
 * Type `make all` to compile the sources.
 * Type `make docs` to generate documentation for this project.
 * Type `make install` to install it into /usr/local directory.
