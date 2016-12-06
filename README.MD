@@ -42,6 +42,11 @@ Please read [CONTRIBUTING.MD](/CONTRIBUTING.MD) for details on our code of condu
 
 We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](/tags). 
 
+## Documentation
+
+Documentation for this project are automatically generated using doxygen. To generate documentation for this,
+type `make docs` and all the documentations wil be developed inside `docs`. You can click on index.html file in the root folder to access the documentation. The file is a symbolic link and will be broken untill documentation is generated.
+
 ## Authors
 
 * **Dinesh Bhattarai** <dineshbhattrai0@gmail.com> 
