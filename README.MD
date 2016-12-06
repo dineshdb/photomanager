@@ -51,7 +51,7 @@ type `make docs` and all the documentations wil be developed inside `docs`. You 
 
 * **Dinesh Bhattarai** <dineshbhattrai0@gmail.com> 
 * **Aashutosh Poudyal** <aashutoshpoudyal@gmail.com>
-* **Krishna Upadhyaya** <krishnaupadhyay1997@gmail.com>
+* **Krishna Upadhyay** <krishnaupadhyay1997@gmail.com>
 
 See also the list of [contributors](/CONTRIBUTORS.MD) who participated in this project.
 
