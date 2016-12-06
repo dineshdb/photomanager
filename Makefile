@@ -6,8 +6,11 @@ BUILD_ENV=debug
 all: daemon camera manager docs
 
 prepare:
-	sudo apt install graphviz libopencv-dev qtcreator libboost-dev
+	sudo apt install qtcreator
 
+prepare-dev: prepare
+	sudo apt install graphviz libopencv-dev libboost-dev mscgen
+	
 daemon:
 	$(CC) -c $(SRC)/daemon/daemon.cc -o $(BUILD_DIR)/$(BUILD_ENV)/daemon.o
 
