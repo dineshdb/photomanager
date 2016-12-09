@@ -22,6 +22,7 @@ What things you need to install the software and how to install them
 ### Installing
 * Clone this repo using `git clone <repo_url>`
 * Enter into the repo directory.
+* Type `cmake .` to prepare the make system.
 * Type `make prepare` to install all the dependencies required for running this project.
 * Type `make prepare-dev` to install all the dependencies required for compiling this project.
 * Type `make all` to compile the sources.
