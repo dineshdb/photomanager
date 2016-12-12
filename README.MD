@@ -23,8 +23,6 @@ What things you need to install the software and how to install them
 * Clone this repo using `git clone <repo_url>`
 * Enter into the repo directory.
 * Type `cmake .` to prepare the make system.
-* Type `make prepare` to install all the dependencies required for running this project.
-* Type `make prepare-dev` to install all the dependencies required for compiling this project.
 * Type `make all` to compile the sources.
 * Type `make docs` to generate documentation for this project.
 * Type `make install` to install it into /usr/local directory.
@@ -47,7 +45,7 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 ## Documentation
 
 Documentation for this project are automatically generated using doxygen. To generate documentation for this,
-type `make docs` and all the documentations wil be developed inside `docs`. You can click on index.html file in the root folder to access the documentation. The file is a symbolic link and will be broken untill documentation is generated.
+type `make docs` and all the documentations wil be developed inside `docs`. You can click on index.html file in the root folder to access the documentation. The file is a symbolic link and will be broken untill documentation is generated. You will see the documentation [here](documentation/index.md).
 
 ## Authors
 
@@ -57,13 +55,5 @@ type `make docs` and all the documentations wil be developed inside `docs`. You 
 
 See also the list of [contributors](/CONTRIBUTORS.MD) who participated in this project.
 
-## License
-
-This project is licensed under the MIT License - see the [LICENSE.MD](LICENSE.MD) file for details
-
-## Acknowledgments
-
-* Hat tip to anyone who's code was used
-* Inspiration
-* etc
-
+## License 
+[LICENSE.MD](LICENSE.MD)

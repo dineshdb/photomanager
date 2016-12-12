@@ -6,7 +6,7 @@
  * It can detect faces in the camera and identify the person.
  * Image will be captured and saved on user-action.
  */
-int main(int argc, char **argv){
+int main(){
 	std::cout << "Hello";
 	return 0;
 }

@@ -1,4 +1,7 @@
-# Contributing and Code of Conduct
+# Contributing
+
+
+# Code Of Conduct
 
 You should follow following rules if you want to contribute to this repo. Please feel free to make a pull request.
 

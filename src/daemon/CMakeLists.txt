@@ -4,6 +4,7 @@ include_directories(${PhotoManager_SOURCE_DIR}/include)
 # source files
 set(DAEMON_SOURCES "daemon.cc")
 
+find_package(OpenCV REQUIRED)
 # Build Library
 add_executable(daemon ${DAEMON_SOURCES})
 target_link_libraries(daemon ${GLIBS} )           

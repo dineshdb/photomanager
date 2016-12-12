@@ -8,14 +8,12 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -pedantic -Wextra")
 include_directories(include)
 
 # various project names
-SET(PROJECT_NAMES "camera")
-SET(PROJECT_NAMES "daemon")
-
+SET(PROJECT_NAMES "camera" "daemon" "manager")
 
 # Documentation
 find_package(Doxygen)
 if(DOXYGEN_FOUND)
-	add_custom_target(doc
+	add_custom_target(docs
 		${DOXYGEN_EXECUTABLE} ${CMAKE_SOURCE_DIR}/doxy.config
 		WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
 		COMMENT "Generating API documentation with Doxygen" VERBATIM
