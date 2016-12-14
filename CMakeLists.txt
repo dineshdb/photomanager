@@ -24,6 +24,6 @@ endif(DOXYGEN_FOUND)
 foreach(PROJECT_NAME ${PROJECT_NAMES})
   # add sub-directories
   add_subdirectory("${CMAKE_SOURCE_DIR}/src/${PROJECT_NAME}"
-    "${CMAKE_CURRENT_BINARY_DIR}/out/${PROJECT_NAME}")
+    "${CMAKE_CURRENT_BINARY_DIR}/build/${PROJECT_NAME}")
 
 endforeach(PROJECT_NAME ${PROJECT_NAMES})
