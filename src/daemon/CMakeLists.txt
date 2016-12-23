@@ -42,15 +42,6 @@ endif ()
 include_directories(${PhotoManager_SOURCE_DIR}/include ${Boost_INCLUDE_DIRS})
 # Build Library
 add_executable(daemon ${DAEMON_SOURCES})
-add_executable(test1 "test.cc" "recognizer.cc")
-target_link_libraries(test1
-	-pthread
-	-lrt
-	${GLIBS}
-	${Boost_LIBRARIES}
-	${OpenCV_LIBS}
-	${GTKMM_LIBRARIES}
-)
 
 target_link_libraries(daemon
 	-pthread
