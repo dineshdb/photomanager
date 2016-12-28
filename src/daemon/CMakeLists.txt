@@ -51,5 +51,7 @@ target_link_libraries(daemon
 	${OpenCV_LIBS}
 	${GTKMM_LIBRARIES}
 )
-set_target_properties(daemon PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build/bin)   
+set_target_properties(daemon PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build/bin)  
+install(TARGETS daemon DESTINATION /usr/local/bin)
+ 
 
