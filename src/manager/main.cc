@@ -50,6 +50,7 @@ int main (int argc, char **argv)
   appChooser->append_custom_item( (const gchar *)"peopleButton", (const gchar *)"People", icon);
   appChooser->append_custom_item( (const gchar *)"eventsButton", (const gchar *)"Events", icon);
   appChooser->append_custom_item( (const gchar *)"tagsButton", (const gchar *)"Tags", icon);
+  appChooser->append_custom_item( (const gchar *)"cameraButton", (const gchar *)"Camera", icon);
     
   appChooser->set_active_custom_item("photosButton");
   
