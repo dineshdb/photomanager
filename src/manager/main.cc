@@ -1,4 +1,5 @@
 #include <gtkmm.h>
+#include <iostream>
 /**
  *	This is the main GUI for our photomanager application.
  *	It has buttons: titled "People", "Tags", "Open Camera", "Folders"
