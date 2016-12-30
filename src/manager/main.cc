@@ -20,7 +20,7 @@ int main (int argc, char **argv)
   
   try
   {
-    refBuilder->add_from_file("manager.glade");
+    refBuilder->add_from_file("src/manager/manager.glade");
   }
   catch(const Glib::FileError& ex)
   {
