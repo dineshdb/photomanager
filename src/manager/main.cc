@@ -38,9 +38,20 @@ int main (int argc, char **argv)
     return 1;
   }
 
+  Gtk::AppChooserButton *appChooser = nullptr;
   //Get the GtkBuilder-instantiated window
+  refBuilder->get_widget("mainWindowv2", pWindow);
+  refBuilder->get_widget("appChooserButton", appChooser);
+
+  // Create some icons
+  Glib::RefPtr<Gio::Icon> icon = Gio::Icon::create("file-new");
   
-  refBuilder->get_widget("mainWindow", pWindow);
+  appChooser->append_custom_item( (const gchar *)"photosButton", (const gchar *)"Photos", icon);
+  appChooser->append_custom_item( (const gchar *)"peopleButton", (const gchar *)"People", icon);
+  appChooser->append_custom_item( (const gchar *)"eventsButton", (const gchar *)"Events", icon);
+  appChooser->append_custom_item( (const gchar *)"tagsButton", (const gchar *)"Tags", icon);
+    
+  appChooser->set_active_custom_item("photosButton");
   
   if(pWindow)
   {
