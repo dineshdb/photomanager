@@ -39,20 +39,26 @@ int main (int argc, char **argv)
   }
 
   Gtk::AppChooserButton *appChooser = nullptr;
+  Gtk::HeaderBar *headerBar = nullptr;
   //Get the GtkBuilder-instantiated window
   refBuilder->get_widget("mainWindowv2", pWindow);
   refBuilder->get_widget("appChooserButton", appChooser);
+  refBuilder->get_widget("headerBar", headerBar);
+  
 
   // Create some icons
-  Glib::RefPtr<Gio::Icon> icon = Gio::Icon::create("file-new");
+  Glib::RefPtr<Gio::Icon> icon = Gio::Icon::create("file");
   
-  appChooser->append_custom_item( (const gchar *)"photosButton", (const gchar *)"Photos", icon);
-  appChooser->append_custom_item( (const gchar *)"peopleButton", (const gchar *)"People", icon);
-  appChooser->append_custom_item( (const gchar *)"eventsButton", (const gchar *)"Events", icon);
-  appChooser->append_custom_item( (const gchar *)"tagsButton", (const gchar *)"Tags", icon);
-  appChooser->append_custom_item( (const gchar *)"cameraButton", (const gchar *)"Camera", icon);
+  appChooser->append_custom_item( (const gchar *)"photosButton", (const gchar *)" Photos ", icon);
+  appChooser->append_custom_item( (const gchar *)"peopleButton", (const gchar *)" People ", icon);
+  appChooser->append_custom_item( (const gchar *)"eventsButton", (const gchar *)" Events ", icon);
+  appChooser->append_custom_item( (const gchar *)"tagsButton", (const gchar *)" Tags ", icon);
+  appChooser->append_custom_item( (const gchar *)"cameraButton", (const gchar *)" Camera ", icon);
+  appChooser->append_custom_item( (const gchar *)"placesButton", (const gchar *)" Places ", icon);
     
   appChooser->set_active_custom_item("photosButton");
+  
+  pWindow->set_titlebar(*headerBar);
   
   if(pWindow)
   {

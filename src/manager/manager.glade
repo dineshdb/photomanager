@@ -2,200 +2,64 @@
 <!-- Generated with glade 3.20.0 -->
 <interface>
   <requires lib="gtk+" version="3.20"/>
-  <object class="GtkWindow" id="mainWindow">
-    <property name="width_request">600</property>
-    <property name="height_request">400</property>
+  <object class="GtkHeaderBar" id="headerBar">
+    <property name="visible">True</property>
     <property name="can_focus">False</property>
+    <property name="show_close_button">True</property>
     <child>
-      <object class="GtkPaned" id="hPane1">
+      <object class="GtkAppChooserButton" id="appChooserButton">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="show_dialog_item">True</property>
+        <property name="show_default_item">True</property>
+      </object>
+      <packing>
+        <property name="position">1</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkSearchEntry">
         <property name="visible">True</property>
         <property name="can_focus">True</property>
-        <child>
-          <object class="GtkBox" id="sideButtonBox">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="halign">baseline</property>
-            <property name="valign">baseline</property>
-            <property name="orientation">vertical</property>
-            <child>
-              <object class="GtkButton" id="peopleButton">
-                <property name="label" translatable="yes">People</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="margin_left">5</property>
-                <property name="margin_right">5</property>
-                <property name="margin_top">5</property>
-                <property name="margin_bottom">5</property>
-                <property name="hexpand">False</property>
-                <property name="vexpand">False</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="position">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkButton" id="tagsButton">
-                <property name="label" translatable="yes">Tags</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="margin_left">5</property>
-                <property name="margin_right">5</property>
-                <property name="margin_top">5</property>
-                <property name="margin_bottom">5</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="position">1</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkButton" id="cameraButton">
-                <property name="label" translatable="yes">Open Camera</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="margin_left">5</property>
-                <property name="margin_right">5</property>
-                <property name="margin_top">5</property>
-                <property name="margin_bottom">5</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="position">2</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkButton" id="foldersButton">
-                <property name="label" translatable="yes">Folders</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="margin_left">5</property>
-                <property name="margin_right">5</property>
-                <property name="margin_top">5</property>
-                <property name="margin_bottom">5</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">False</property>
-                <property name="position">3</property>
-              </packing>
-            </child>
-          </object>
-          <packing>
-            <property name="resize">False</property>
-            <property name="shrink">False</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkPaned" id="vPane1">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="orientation">vertical</property>
-            <property name="position">30</property>
-            <child>
-              <object class="GtkSearchEntry" id="searchEntry">
-                <property name="height_request">-1</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="max_length">25</property>
-                <property name="width_chars">25</property>
-                <property name="max_width_chars">25</property>
-                <property name="text" translatable="yes">Search</property>
-                <property name="primary_icon_name">edit-find-symbolic</property>
-                <property name="primary_icon_activatable">False</property>
-                <property name="primary_icon_sensitive">False</property>
-              </object>
-              <packing>
-                <property name="resize">False</property>
-                <property name="shrink">False</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkScrolledWindow" id="scrolledWindow">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="halign">baseline</property>
-                <property name="valign">baseline</property>
-                <property name="hscrollbar_policy">always</property>
-                <property name="vscrollbar_policy">always</property>
-                <property name="shadow_type">in</property>
-                <property name="min_content_width">0</property>
-                <property name="min_content_height">0</property>
-                <child>
-                  <placeholder/>
-                </child>
-              </object>
-              <packing>
-                <property name="resize">True</property>
-                <property name="shrink">False</property>
-              </packing>
-            </child>
-          </object>
-          <packing>
-            <property name="resize">True</property>
-            <property name="shrink">False</property>
-          </packing>
-        </child>
+        <property name="primary_icon_name">edit-find-symbolic</property>
+        <property name="primary_icon_activatable">False</property>
+        <property name="primary_icon_sensitive">False</property>
       </object>
+      <packing>
+        <property name="pack_type">end</property>
+        <property name="position">1</property>
+      </packing>
     </child>
   </object>
-  <object class="GtkWindow" id="mainWindowv2">
+  <object class="GtkApplicationWindow" id="mainWindowv2">
     <property name="can_focus">False</property>
+    <property name="window_position">center</property>
     <property name="default_width">600</property>
     <property name="default_height">400</property>
-    <property name="hide_titlebar_when_maximized">True</property>
-    <property name="decorated">False</property>
+    <property name="destroy_with_parent">True</property>
+    <property name="has_resize_grip">True</property>
     <child>
       <object class="GtkBox">
         <property name="visible">True</property>
-        <property name="can_focus">False</property>
+        <property name="app_paintable">True</property>
+        <property name="can_focus">True</property>
+        <property name="has_focus">True</property>
+        <property name="receives_default">True</property>
         <property name="orientation">vertical</property>
         <child>
-          <object class="GtkHeaderBar">
+          <object class="GtkBox" id="contentArea">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="title">Manager</property>
-            <property name="has_subtitle">False</property>
-            <property name="show_close_button">True</property>
+            <property name="orientation">vertical</property>
             <child>
-              <object class="GtkAppChooserButton" id="appChooserButton">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="show_dialog_item">True</property>
-                <property name="show_default_item">True</property>
-              </object>
-              <packing>
-                <property name="position">1</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkSearchEntry">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="primary_icon_name">edit-find-symbolic</property>
-                <property name="primary_icon_activatable">False</property>
-                <property name="primary_icon_sensitive">False</property>
-              </object>
-              <packing>
-                <property name="pack_type">end</property>
-              </packing>
+              <placeholder/>
             </child>
           </object>
           <packing>
-            <property name="expand">False</property>
+            <property name="expand">True</property>
             <property name="fill">True</property>
             <property name="position">0</property>
           </packing>
-        </child>
-        <child>
-          <placeholder/>
         </child>
       </object>
     </child>
