@@ -1,5 +1,5 @@
 #include <iostream>
-#include "MainWindow.hh"
+#include <gtkmm.h>
 /**
  * The entry point for our camera application.
  * It opens the camera stream for picture caption.
@@ -7,25 +7,49 @@
  * Image will be captured and saved on user-action.
  */
 
+Gtk::Window* mainWindow = nullptr;
 int main(int argc, char **argv) {
-	auto app =Gtk::Application::create(argc,argv, "com.dinnux.Camera");
+	auto app = Gtk::Application::create(argc,argv, "com.dinnux.Camera");
 
-	Glib::RefPtr<Gtk::Builder> builder = Gtk::Builder::create_from_file("src/camera/MainWindow.glade");
+	Glib::RefPtr<Gtk::Builder> builder = Gtk::Builder::create_from_file("src/camera/camera.glade");
 
-	MainWindow *mainWindow = 0;
-	builder->get_widget_derived("mainwindow", mainWindow);
-//	auto appMenu = builder->get_object("appmenu");
-//	auto topMenuButton = Glib::RefPtr<Gtk::MenuButton>::cast_dynamic(builder->get_object("topmenu"));
+	//Load the Gtk::Builder file and instantiate its widgets
+  	auto refBuilder = Gtk::Builder::create();
 
-//	auto app_menu = Glib::RefPtr<Gio::MenuModel>::cast_dynamic(appMenu);
-//	topMenuButton->set_menu_model(app_menu);
-//	if(app_menu){
-//		app->set_app_menu(app_menu);
-//	} else {
-//		cout << "Could not set app menu"<< endl;
-//	}
+	try {
+    		refBuilder->add_from_file("src/camera/camera.glade");
+  	}
+
+  	catch(const Glib::FileError& ex) {
+   		std::cerr << "FileError: " << ex.what() << std::endl;
+    		return 1;
+  	}
+
+  	catch(const Glib::MarkupError& ex){
+    		std::cerr << "MarkupError: " << ex.what() << std::endl;
+    		return 1;
+  	}
+
+  	catch(const Gtk::BuilderError& ex) {
+    		std::cerr << "BuilderError: " << ex.what() << std::endl;
+    		return 1;
+  	}
+
+  	Gtk::HeaderBar *headerBar = nullptr;
+  	//Get the GtkBuilder-instantiated window
+  	refBuilder->get_widget("mainWindow", mainWindow);
+  	refBuilder->get_widget("headerBar", headerBar);
 
 
-	app->run(*mainWindow);
+	mainWindow->set_titlebar(*headerBar);
+
+	if(mainWindow) {
+    		app->run(*mainWindow);
+  	}
+
+  	delete mainWindow;
+
+  	return 0;
+	// app->run(*mainWindow);
 	return 0;
 }
