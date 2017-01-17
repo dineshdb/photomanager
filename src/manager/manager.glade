@@ -5,12 +5,16 @@
   <object class="GtkHeaderBar" id="headerBar">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
+    <property name="title">Photo Manager</property>
     <property name="show_close_button">True</property>
     <child>
       <object class="GtkAppChooserButton" id="appChooserButton">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="show_dialog_item">True</property>
+        <property name="double_buffered">False</property>
+        <property name="halign">start</property>
+        <property name="vexpand">True</property>
+        <property name="popup_fixed_width">False</property>
         <property name="show_default_item">True</property>
       </object>
       <packing>
@@ -37,9 +41,11 @@
     <property name="default_width">600</property>
     <property name="default_height">400</property>
     <property name="destroy_with_parent">True</property>
+    <property name="hide_titlebar_when_maximized">True</property>
     <property name="has_resize_grip">True</property>
+    <property name="show_menubar">False</property>
     <child>
-      <object class="GtkBox">
+      <object class="GtkBox" id="contentArea">
         <property name="visible">True</property>
         <property name="app_paintable">True</property>
         <property name="can_focus">True</property>
@@ -47,19 +53,7 @@
         <property name="receives_default">True</property>
         <property name="orientation">vertical</property>
         <child>
-          <object class="GtkBox" id="contentArea">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="orientation">vertical</property>
-            <child>
-              <placeholder/>
-            </child>
-          </object>
-          <packing>
-            <property name="expand">True</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
+          <placeholder/>
         </child>
       </object>
     </child>

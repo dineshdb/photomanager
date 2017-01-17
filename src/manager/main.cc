@@ -18,22 +18,15 @@ int main (int argc, char **argv)
   //Load the Gtk::Builder file and instantiate its widgets
   auto refBuilder = Gtk::Builder::create();
   
-  try
-  {
+  try {
     refBuilder->add_from_file("src/manager/manager.glade");
-  }
-  catch(const Glib::FileError& ex)
-  {
+  } catch(const Glib::FileError& ex) {
     std::cerr << "FileError: " << ex.what() << std::endl;
     return 1;
-  }
-  catch(const Glib::MarkupError& ex)
-  {
+  } catch(const Glib::MarkupError& ex) {
     std::cerr << "MarkupError: " << ex.what() << std::endl;
     return 1;
-  }
-  catch(const Gtk::BuilderError& ex)
-  {
+  } catch(const Gtk::BuilderError& ex) {
     std::cerr << "BuilderError: " << ex.what() << std::endl;
     return 1;
   }
@@ -47,13 +40,15 @@ int main (int argc, char **argv)
   
 
   // Create some icons
-  Glib::RefPtr<Gio::Icon> icon = Gio::Icon::create("file");
+  Glib::RefPtr<Gio::Icon> cameraIcon = Gio::Icon::create("camera-photo");
+  Glib::RefPtr<Gio::Icon> imageIcon = Gio::Icon::create("image-x-generic");
+  Glib::RefPtr<Gio::Icon> icon = Gio::Icon::create("icon");
   
-  appChooser->append_custom_item( (const gchar *)"photosButton", (const gchar *)" Photos ", icon);
+  appChooser->append_custom_item( (const gchar *)"photosButton", (const gchar *)" Photos ", imageIcon);
   appChooser->append_custom_item( (const gchar *)"peopleButton", (const gchar *)" People ", icon);
   appChooser->append_custom_item( (const gchar *)"eventsButton", (const gchar *)" Events ", icon);
   appChooser->append_custom_item( (const gchar *)"tagsButton", (const gchar *)" Tags ", icon);
-  appChooser->append_custom_item( (const gchar *)"cameraButton", (const gchar *)" Camera ", icon);
+  appChooser->append_custom_item( (const gchar *)"cameraButton", (const gchar *)" Camera ", cameraIcon);
   appChooser->append_custom_item( (const gchar *)"placesButton", (const gchar *)" Places ", icon);
     
   appChooser->set_active_custom_item("photosButton");
