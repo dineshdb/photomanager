@@ -1,9 +1,11 @@
 #include <iostream>
 #include <string>
+#include <sqlite3.h>
 
 #include "dbus-service.hh"
 #include "recognizer.hh"
 #include "cmd-parser.hh"
+#include "DirectoryScanner.hh"
 
 // FIXME: Opencv methods don't work propely
 // TODO: Add interfaces, objects and methods to dbus
@@ -32,4 +34,23 @@ int main(int argc, char *argv[]) {
  	CommandParser c;
 	c.parse(argc, argv);
 	return 0;
+}
+
+void diffFolders(std::vector<Glib::ustring> &t1, std::vector<Glib::ustring> &t2){
+  for(auto entry : t1){
+//    if(t2.contains(entry)){
+//      t2.remove(entry);
+//    }
+  }
+}
+
+void scanFolders(){
+  // TODO Diff these files with database, then patch the database with new info.
+  DirectoryScanner scanner;
+  scanner.addFolder("/home/dineshdb/Pictures");
+  scanner.start();
+  std::vector<Glib::ustring> files = scanner.getFiles();
+  for(auto file : files){
+    std::cout << file << std::endl;
+  }  
 }

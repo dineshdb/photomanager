@@ -10,18 +10,18 @@ namespace {
 	"<node>"
 	"  <interface name='com.dinnux.PhotoManager.Photo'>"
 	"    <method name='GetTime'>"
-        "      <arg type='s' name='iso8601' direction='out'/>"
+    "      <arg type='s' name='iso8601' direction='out'/>"
 	"    </method>"
-        "    <method name='SetAlarm'>"
+    "    <method name='SetAlarm'>"
 	"      <arg type='s' name='iso8601' direction='in'/>"
-        "    </method>"
+    "    </method>"
 	"  </interface>"
-        "</node>";
-        guint registered_id;
-        Glib::RefPtr<Gio::DBus::NodeInfo> introspection_data ;
-        const std::string BUS_Address = "com.dinnux.PhotoManager";
+    "</node>";
+    guint registered_id;
+    Glib::RefPtr<Gio::DBus::NodeInfo> introspection_data ;
+    const std::string BUS_Address = "com.dinnux.PhotoManager";
 }
-static void on_method_call(
+void on_method_call(
 	const Glib::RefPtr<Gio::DBus::Connection>& connection,
 	const Glib::ustring& sender, const Glib::ustring& object_path,
 	const Glib::ustring& interface_name, const Glib::ustring& method_name,

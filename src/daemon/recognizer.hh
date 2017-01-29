@@ -31,7 +31,7 @@ public:
 	int predictPhoto(Mat face){
 		return model->predict(face);
 	}
-	int updatePhoto(vector<Mat> faces, vector<int> ids){
+	void updatePhoto(vector<Mat> faces, vector<int> ids){
 		model->update(faces, ids);
 	}
 

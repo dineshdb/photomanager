@@ -1,8 +1,4 @@
-#include headers from this folder
-
-
-# source files
-set(DAEMON_SOURCES "daemon.cc" "cmd-parser.cc" "dbus-service.cc" "recognizer.cc")
+set(DAEMON_SOURCES "daemon.cc" "cmd-parser.cc" "dbus-service.cc" "recognizer.cc" "DirectoryScanner")
 
 find_package(OpenCV REQUIRED)
 

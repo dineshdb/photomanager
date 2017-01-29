@@ -2,9 +2,12 @@
 
 static Glib::TimeVal curr_alarm;
 
-static void on_method_call(const Glib::RefPtr<Gio::DBus::Connection>& /* connection */,
-  const Glib::ustring& /* sender */, const Glib::ustring& /* object_path */,
-  const Glib::ustring& /* interface_name */, const Glib::ustring& method_name,
+void on_method_call(
+  const Glib::RefPtr<Gio::DBus::Connection>& /* connection */,
+  const Glib::ustring& /* sender */, 
+  const Glib::ustring& /* object_path */,
+  const Glib::ustring& /* interface_name */,
+  const Glib::ustring& method_name,
   const Glib::VariantContainerBase& parameters,
   const Glib::RefPtr<Gio::DBus::MethodInvocation>& invocation)
 {
@@ -33,22 +36,27 @@ static void on_method_call(const Glib::RefPtr<Gio::DBus::Connection>& /* connect
     const Glib::ustring time_str = param.get();
 
     if (!curr_alarm.assign_from_iso8601(time_str)) {
-      // If setting alarm was not successful, return an error.
       Gio::DBus::Error error(
         Gio::DBus::Error::INVALID_ARGS, "Alarm string is not in ISO8601 format.");
       invocation->return_error(error);
     }
+    
+  } else if( method_name == "GetPhotos") {
+  
+  } else if( method_name == "GetPeople") {
+  
+  } else if( method_name == "GetEvents") {
+  } else if( method_name == "GetTags") {
+  } else if( method_name == "GetPhotoDetail") {
+  } else if( method_name == "GetEvents") {
   } else {
-    // Non-existent method on the interface.
     Gio::DBus::Error error(Gio::DBus::Error::UNKNOWN_METHOD, "Method does not exist.");
     invocation->return_error(error);
   }
 }
 
-// This must be a global instance. See the InterfaceVTable documentation.
-// TODO: Make that unnecessary.
 const Gio::DBus::InterfaceVTable interface_vtable(sigc::ptr_fun(&on_method_call));
-
+void on_name_acquired(const Glib::RefPtr<Gio::DBus::Connection>&/*connection*/,const Glib::ustring&/*name*/){}
 /**
  * @brief Called right after the bus is acquired. Exports an object to the bus.
  * @param connection DBus connection object
@@ -71,13 +79,6 @@ void on_bus_acquired(const Glib::RefPtr<Gio::DBus::Connection>& connection,
   }
   return;
 }
-/**
- * @brief dummy function
- * @see What is this good for? See https://bugzilla.gnome.org/show_bug.cgi?id=646427
- *
- */
-void on_name_acquired(const Glib::RefPtr<Gio::DBus::Connection>& /*connection */, const Glib::ustring& /* name */) {
-}
 
 /**
  * @brief Function called upon the loss of name, or failure to acquire name
@@ -96,14 +97,14 @@ int dbus_init(){
 		return 1;
 	}
 
-  	const auto id = Gio::DBus::own_name(Gio::DBus::BUS_TYPE_SESSION,
-  				BUS_Address,
-    				sigc::ptr_fun(&on_bus_acquired),
-    				sigc::ptr_fun(&on_name_acquired),
-    				sigc::ptr_fun(&on_name_lost)
-    			);
+  	const auto id = Gio::DBus::own_name(
+  	    Gio::DBus::BUS_TYPE_SESSION,
+		BUS_Address,
+		sigc::ptr_fun(&on_bus_acquired),
+		sigc::ptr_fun(&on_name_acquired),
+		sigc::ptr_fun(&on_name_lost)
+	);
 
-  	// Keep the service running until the process is killed:
   	auto loop = Glib::MainLoop::create();
   	loop->run();
 
