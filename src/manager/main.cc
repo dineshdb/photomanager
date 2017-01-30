@@ -11,6 +11,22 @@
 
 Gtk::Window* pWindow = nullptr;
 
+const std::string rootFolder = "~/Pictures";
+
+std::vector<Glib::ustring> enumerate_files(const Glib::ustring& path)
+{
+  std::vector<Glib::ustring> file_names;
+  Glib::RefPtr<Gio::File> file = Gio::File::create_for_path(path);
+  Glib::RefPtr<Gio::FileEnumerator> child_enumeration = file->enumerate_children(G_FILE_ATTRIBUTE_STANDARD_NAME);
+  Glib::RefPtr<Gio::FileInfo> file_info;
+  while ((file_info = child_enumeration->next_file()))
+  {
+    file_names.push_back(file_info->get_name());
+  }
+  return file_names;
+}
+
+
 int main (int argc, char **argv)
 {
   auto app = Gtk::Application::create(argc, argv, "com.skynet.manager");
