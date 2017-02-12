@@ -1,4 +1,6 @@
 #include <gtkmm.h>
+#include <giomm.h>
+#include <glibmm.h>
 #include <iostream>
 /**
  *	This is the main GUI for our photomanager application.
@@ -31,7 +33,25 @@ int main (int argc, char **argv)
 {
   auto app = Gtk::Application::create(argc, argv, "com.skynet.manager");
 
-  //Load the Gtk::Builder file and instantiate its widgets
+// Calling a simple function GetTime in dbus daemon.
+  auto connection = Gio::DBus::Connection::get_sync(Gio::DBus::BUS_TYPE_SESSION);
+  Glib::RefPtr<Gio::Cancellable> cancellable;
+
+  Glib::RefPtr<Gio::DBus::Proxy> proxy = Gio::DBus::Proxy::create_sync(
+      connection, 
+      "com.dinnux.PhotoManager",                        // service name
+      "/com/dinnux/PhotoManager/Photo",                    // object path
+      "com.dinnux.PhotoManager.Photo",  				// interface name
+      cancellable); 
+
+  Glib::VariantContainerBase result = proxy->call_sync("GetTime", cancellable);  
+  Glib::Variant< Glib::ustring > introspection_str; 
+  result.get_child(introspection_str); 
+
+  std::cout << "answer is " << introspection_str.get() << std::endl;
+  
+// End of callng GetTime in dbus
+
   auto refBuilder = Gtk::Builder::create();
   
   try {

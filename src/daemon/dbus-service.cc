@@ -70,7 +70,7 @@ void on_bus_acquired(const Glib::RefPtr<Gio::DBus::Connection>& connection,
 {
   try {
 	registered_id = connection->register_object(
-		"/org/glibmm/DBus/TestObject",
+		"/com/dinnux/PhotoManager/Photo",
 		introspection_data->lookup_interface(),
 		interface_vtable
 	);
