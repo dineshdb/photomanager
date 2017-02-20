@@ -5,6 +5,8 @@
 #include <glibmm.h>
 #include <iostream>
 
+using namespace std; 
+
 namespace {
 	std::string introspection_xml=
 	"<node>"

@@ -1,6 +1,9 @@
 #include <iostream>
 #include <string>
 
+#include <libgdamm.h>
+#include <gtkmm.h>
+
 #include "dbus-service.hh"
 #include "recognizer.hh"
 #include "cmd-parser.hh"
@@ -27,14 +30,20 @@ using namespace std;
  * To predict a photo, run `$ daemon -p <image>`
  *
  */
-int main(int argc, char *argv[]) {
-	std::locale::global(std::locale(""));
+ 
+Glib::RefPtr<Gnome::Gda::Connection> conn;
+Recognizer r;
 
- 	CommandParser c;
-	c.parse(argc, argv);
-	return 0;
+void scanFile(Glib::ustring &filename){
+  auto faces = r.getFaces(filename);
+  
+  cout << filename;
+  for(auto face : faces){
+    cout << face;
+  }
+  cout << endl;
+  
 }
-
 void scanFolders(){
   // TODO Diff these files with database, then patch the database with new info.
   DirectoryScanner scanner;
@@ -44,6 +53,23 @@ void scanFolders(){
   std::vector<Glib::ustring> newFiles;
 
   for(auto file : files){
-    std::cout << file << std::endl;
+    scanFile(file);
   }  
 }
+int main(int argc, char *argv[]) {
+  std::locale::global(std::locale(""));
+  Gnome::Gda::init();
+  
+  conn = Gnome::Gda::Connection::open_from_string(
+  			(const gchar *) "SQLite",
+  			(const gchar *) "DB_DIR=.;DB_NAME=phots",
+  			(const gchar *) "",
+		    (Gnome::Gda::ConnectionOptions) 0
+  		);
+  		
+  scanFolders();
+  CommandParser c;
+  c.parse(argc, argv);
+  return 0;
+}
+

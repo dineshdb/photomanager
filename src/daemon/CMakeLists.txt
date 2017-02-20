@@ -13,10 +13,17 @@ find_package(PkgConfig REQUIRED)
 pkg_check_modules (GLIBMM-2.4 REQUIRED glibmm-2.4 giomm-2.4)
 pkg_check_modules (GTKMM REQUIRED gtkmm-3.0)
 
+pkg_check_modules(GDAMM REQUIRED libgdamm-5.0)
+get_cmake_property(_variableNames VARIABLES)
+foreach (_variableName ${_variableNames})
+    message(STATUS "${_variableName}=${${_variableName}}")
+endforeach()
+include_directories(${GDAMM_INCLUDE_DIRS})
 include_directories(${GLIBMM_INCLUDE_DIRS})
 include_directories(${GTKMM_INCLUDE_DIRS})
 
 link_directories(${GTKMM_LIBRARY_DIRS}  )
+link_directories(${GDAMM_LIBRARY_DIRS}  )
 
 if (Boost_FOUND)
   # From the offical documentation:
@@ -46,6 +53,7 @@ target_link_libraries(daemon
 	${Boost_LIBRARIES}
 	${OpenCV_LIBS}
 	${GTKMM_LIBRARIES}
+	${GDAMM_LDFLAGS}
 )
 set_target_properties(daemon PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/build/bin)  
 install(TARGETS daemon DESTINATION /usr/local/bin)

@@ -57,6 +57,7 @@ int CommandParser::parse(int argc, char **argv){
 		if (vm.count("help"))
 		  std::cout << desc << '\n';
 		else if (vm.count("daemon")){
+//			scanFolders();
 			dbus_init();
 		} else if (vm.count("update")){
 			int userid = vm["userid"].as<int>();

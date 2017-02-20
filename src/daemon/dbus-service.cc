@@ -106,6 +106,7 @@ int dbus_init(){
 	);
 
   	auto loop = Glib::MainLoop::create();
+  	cout << "Initializing daemon" << endl;
   	loop->run();
 
   	Gio::DBus::unown_name(id);
