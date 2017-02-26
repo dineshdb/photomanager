@@ -2,6 +2,8 @@
 #include <giomm.h>
 #include <glibmm.h>
 #include <iostream>
+
+#include "proxy.hh"
 /**
  *	This is the main GUI for our photomanager application.
  *	It has buttons: titled "People", "Tags", "Open Camera", "Folders"
@@ -13,44 +15,8 @@
 
 Gtk::Window* pWindow = nullptr;
 
-const std::string rootFolder = "~/Pictures";
-
-std::vector<Glib::ustring> enumerate_files(const Glib::ustring& path)
-{
-  std::vector<Glib::ustring> file_names;
-  Glib::RefPtr<Gio::File> file = Gio::File::create_for_path(path);
-  Glib::RefPtr<Gio::FileEnumerator> child_enumeration = file->enumerate_children(G_FILE_ATTRIBUTE_STANDARD_NAME);
-  Glib::RefPtr<Gio::FileInfo> file_info;
-  while ((file_info = child_enumeration->next_file()))
-  {
-    file_names.push_back(file_info->get_name());
-  }
-  return file_names;
-}
-
-
-int main (int argc, char **argv)
-{
-  auto app = Gtk::Application::create(argc, argv, "com.skynet.manager");
-
-// Calling a simple function GetTime in dbus daemon.
-  auto connection = Gio::DBus::Connection::get_sync(Gio::DBus::BUS_TYPE_SESSION);
-  Glib::RefPtr<Gio::Cancellable> cancellable;
-
-  Glib::RefPtr<Gio::DBus::Proxy> proxy = Gio::DBus::Proxy::create_sync(
-      connection, 
-      "com.dinnux.PhotoManager",                        // service name
-      "/com/dinnux/PhotoManager/Photo",                    // object path
-      "com.dinnux.PhotoManager.Photo",  				// interface name
-      cancellable); 
-
-  Glib::VariantContainerBase result = proxy->call_sync("GetTime", cancellable);  
-  Glib::Variant< Glib::ustring > introspection_str; 
-  result.get_child(introspection_str); 
-
-  std::cout << "answer is " << introspection_str.get() << std::endl;
-  
-// End of callng GetTime in dbus
+int main (int argc, char **argv){
+  auto app = Gtk::Application::create(argc, argv, "com.dinnux.manager");
 
   auto refBuilder = Gtk::Builder::create();
   
@@ -73,7 +39,6 @@ int main (int argc, char **argv)
   refBuilder->get_widget("mainWindowv2", pWindow);
   refBuilder->get_widget("appChooserButton", appChooser);
   refBuilder->get_widget("headerBar", headerBar);
-  
 
   // Create some icons
   Glib::RefPtr<Gio::Icon> cameraIcon = Gio::Icon::create("camera-photo");
@@ -91,8 +56,7 @@ int main (int argc, char **argv)
   
   pWindow->set_titlebar(*headerBar);
   
-  if(pWindow)
-  {
+  if(pWindow){
     app->run(*pWindow);
   }
 
