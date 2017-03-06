@@ -43,6 +43,11 @@ void on_method_call(
     
   } else if( method_name == "GetPhotos") {
   
+  		Glib::Variant<std::vector<Glib::ustring>> photos;
+  		parameters.get_child(photos);
+  		Glib::VariantContainerBase response = Glib::VariantContainerBase::create_tuple(photos);
+  		invocation->return_value(response);
+  		
   } else if( method_name == "GetPeople") {
   
   } else if( method_name == "GetEvents") {

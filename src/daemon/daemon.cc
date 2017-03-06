@@ -47,7 +47,7 @@ void scanFile(Glib::ustring &filename){
 void scanFolders(){
   // TODO Diff these files with database, then patch the database with new info.
   DirectoryScanner scanner;
-  scanner.addFolder("/home/dineshdb/Pictures");
+  scanner.addFolder(Glib::get_home_dir() + "/Pictures");
   scanner.start();
   std::vector<Glib::ustring> files = scanner.getFiles();
   std::vector<Glib::ustring> newFiles;

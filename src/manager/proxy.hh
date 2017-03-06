@@ -27,6 +27,13 @@ public:
     r.get_child(introspection_str);
     return introspection_str.get();
   }
+  
+  std::vector<Glib::ustring> getPhotos(){
+  	Glib::VariantContainerBase photos = proxy->call_sync("GetPhotos", cancellable);
+  	Glib::Variant<std::vector<Glib::ustring>> introspection_str;
+  	photos.get_child(introspection_str);
+  	return introspection_str.get();
+  }
 };
 
 #endif
