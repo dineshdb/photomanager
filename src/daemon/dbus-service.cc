@@ -1,4 +1,5 @@
 #include "dbus-service.hh"
+#include "DirectoryScanner.hh"
 
 static Glib::TimeVal curr_alarm;
 
@@ -42,9 +43,15 @@ void on_method_call(
     }
     
   } else if( method_name == "GetPhotos") {
-  
-  		Glib::Variant<std::vector<Glib::ustring>> photos;
-  		parameters.get_child(photos);
+  		
+  		DirectoryScanner scanner;
+  		scanner.addFolder(Glib::get_home_dir() + "/Pictures");
+  		scanner.start();
+  		const std::vector<Glib::ustring> file_names = scanner.getFiles();
+  		
+  		std::cout << "Called method GetPhotos inside dbus-service " << std::endl;
+  		
+  		const auto photos = Glib::Variant<std::vector<Glib::ustring>>::create(file_names);
   		Glib::VariantContainerBase response = Glib::VariantContainerBase::create_tuple(photos);
   		invocation->return_value(response);
   		
@@ -61,6 +68,7 @@ void on_method_call(
 }
 
 const Gio::DBus::InterfaceVTable interface_vtable(sigc::ptr_fun(&on_method_call));
+
 void on_name_acquired(const Glib::RefPtr<Gio::DBus::Connection>&/*connection*/,const Glib::ustring&/*name*/){}
 /**
  * @brief Called right after the bus is acquired. Exports an object to the bus.

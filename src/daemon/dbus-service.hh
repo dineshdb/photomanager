@@ -17,6 +17,9 @@ namespace {
     "    <method name='SetAlarm'>"
 	"      <arg type='s' name='iso8601' direction='in'/>"
     "    </method>"
+    "    <method name='GetPhotos'>"
+    "      <arg type='as' direction='out' />"
+    "    </method>"
 	"  </interface>"
     "</node>";
     guint registered_id;
