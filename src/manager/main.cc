@@ -160,9 +160,7 @@ int main (int argc, char **argv){
   if(pWindow){
     app->run(*pWindow);
   }
-
-  delete pWindow;
-
+  
   return 0;
 }
 

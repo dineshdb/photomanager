@@ -3,11 +3,14 @@
 
 #include <libgdamm.h>
 #include <gtkmm.h>
+#include <mutex>
+#include <thread>
 
 #include "dbus-service.hh"
 #include "recognizer.hh"
 #include "cmd-parser.hh"
 #include "DirectoryScanner.hh"
+#include "ImageDetails.hh"
 
 // FIXME: Opencv methods don't work propely
 // TODO: Add interfaces, objects and methods to dbus
@@ -32,29 +35,20 @@ using namespace std;
  */
  
 Glib::RefPtr<Gnome::Gda::Connection> conn;
-Recognizer r;
 
-void scanFile(Glib::ustring &filename){
-  auto faces = r.getFaces(filename);
-  
-  cout << filename;
-  for(auto face : faces){
-    cout << face;
-  }
-  cout << endl;
-  
-}
+static mutex dbLock;
+
 void scanFolders(){
+  Recognizer r;
   // TODO Diff these files with database, then patch the database with new info.
   DirectoryScanner scanner;
-  scanner.addFolder(Glib::get_home_dir() + "/Pictures");
+  scanner.addFolder(Glib::get_home_dir() + "/Pictures/test");
   scanner.start();
   std::vector<Glib::ustring> files = scanner.getFiles();
-  std::vector<Glib::ustring> newFiles;
 
   for(auto file : files){
-    scanFile(file);
-  }  
+	r.analyzePhoto(file);
+  }
 }
 int main(int argc, char *argv[]) {
   std::locale::global(std::locale(""));
@@ -66,10 +60,12 @@ int main(int argc, char *argv[]) {
   			(const gchar *) "",
 		    (Gnome::Gda::ConnectionOptions) 0
   		);
+  
+  thread t(scanFolders);  // Runs scanning in another thread  
   		
-  scanFolders();
   CommandParser c;
   c.parse(argc, argv);
+  t.join();
   return 0;
 }
 

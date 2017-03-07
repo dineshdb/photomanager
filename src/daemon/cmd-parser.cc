@@ -1,34 +1,24 @@
 #include "cmd-parser.hh"
 void predictPhotos(string filename){
-	Recognizer r;
-	Mat photo = r.loadPhotoBW(filename);
-	std::vector<Rect> faces = r.getFaces(photo);
-	cout << "There are "<< faces.size() << " faces." << endl;
-	int i =1;
-	for(auto const& face: faces) {
-		Mat faceImg = r.cropFace (photo, face);
-		cout << i <<  " : "
-			<< r.predictPhoto(faceImg) << endl;
-	}
 }
 
 void updatePrediction(string filename, int userid){
-	Recognizer r;
-	Mat photo = r.loadPhotoBW(filename);
-	std::vector<Rect> faces = r.getFaces(photo);
-	cout << "There ar "<< faces.size() << " photos." << endl;
+//	Recognizer r;
+//	Mat photo = r.loadPhotoBW(filename);
+//	std::vector<Rect> faces = r.getFaces(photo);
+//	cout << "There ar "<< faces.size() << " photos." << endl;
 	int i=1, id;
-	std::vector<Mat> nfaces;
-	std::vector<int> nnum;
+//	std::vector<Mat> nfaces;
+//	std::vector<int> nnum;
 
-	for(auto const& face: faces) {
-		Mat faceImg = r.cropFace (photo, face);
-		cout << i <<  " : " ;
-		cin >> id;
-		nfaces.push_back(faceImg);
-		nnum.push_back(id);
-	}
-	r.updatePhoto(nfaces, nnum);
+//	for(auto const& face: faces) {
+//		Mat faceImg = r.cropFace (photo, face);
+//		cout << i <<  " : " ;
+//		cin >> id;
+//		nfaces.push_back(faceImg);
+//		nnum.push_back(id);
+//	}
+//	r.updatePhoto(nfaces, nnum);
 }
 
 int CommandParser::parse(int argc, char **argv){
@@ -57,7 +47,6 @@ int CommandParser::parse(int argc, char **argv){
 		if (vm.count("help"))
 		  std::cout << desc << '\n';
 		else if (vm.count("daemon")){
-//			scanFolders();
 			dbus_init();
 		} else if (vm.count("update")){
 			int userid = vm["userid"].as<int>();
@@ -66,7 +55,6 @@ int CommandParser::parse(int argc, char **argv){
 
 		} else if (vm.count("predict")) {
 			string filename = vm["predict"].as<string>();
-			predictPhotos(filename);
 		} else {
 			std::cout << desc << '\n';
 		}

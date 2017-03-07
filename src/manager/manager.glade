@@ -45,17 +45,7 @@
     <property name="has_resize_grip">True</property>
     <property name="show_menubar">False</property>
     <child>
-      <object class="GtkBox" id="contentArea">
-        <property name="visible">True</property>
-        <property name="app_paintable">True</property>
-        <property name="can_focus">True</property>
-        <property name="has_focus">True</property>
-        <property name="receives_default">True</property>
-        <property name="orientation">vertical</property>
-        <child>
-          <placeholder/>
-        </child>
-      </object>
+      <placeholder/>
     </child>
   </object>
 </interface>

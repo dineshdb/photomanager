@@ -28,6 +28,7 @@ public:
         if (Glib::file_test(fullURL, Glib::FILE_TEST_IS_DIR)){
           addFolder(fullURL);
         } else {
+          // TODO Filter out image files only
           files.push_back(fullURL);
         }
       }

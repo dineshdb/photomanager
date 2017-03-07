@@ -21,8 +21,6 @@ void on_method_call(
 
     // Create the tuple.
     Glib::VariantContainerBase response = Glib::VariantContainerBase::create_tuple(time_var);
-
-    // Return the tuple with the included time.
     invocation->return_value(response);
   } else if (method_name == "SetAlarm") {
     // Get the parameter tuple.
