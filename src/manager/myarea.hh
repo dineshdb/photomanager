@@ -13,9 +13,12 @@ class MyArea : public Gtk::DrawingArea{
 		virtual ~MyArea();
 
 	protected:
+		double scale;
+		Glib::RefPtr<Gdk::Pixbuf> pimage;
+	
 		//override default signal handler
 		bool on_draw(const Cairo::RefPtr<Cairo::Context>& cr) override;
-		Glib::RefPtr<Gdk::Pixbuf> pimage;
+		bool on_scroll_event(GdkEventScroll* ev);
 };
 
 void MyArea::set_image(Glib::ustring image){
@@ -30,6 +33,8 @@ void MyArea::set_image(Glib::ustring image){
 MyArea::MyArea()
 {
     std::cout << "In default constructor of MyArea " << std::endl;
+    add_events(Gdk::BUTTON_PRESS_MASK | Gdk::SCROLL_MASK | Gdk::SMOOTH_SCROLL_MASK);
+	scale = 0.8;
 }
 
 MyArea::~MyArea(){
@@ -48,9 +53,31 @@ bool MyArea::on_draw(const Cairo::RefPtr<Cairo::Context>& cr){
 	//draw the image in the middle of the drawing area, or (if the image is larger than the drawing area)
 	//draw the middle part of the image.
 	
-	Gdk::Cairo::set_source_pixbuf(cr, pimage, (width - pimage->get_width())/2, (height - pimage->get_height())/2);
+	cr->scale(scale, scale);	
+	Gdk::Cairo::set_source_pixbuf(cr, pimage, (width/2)/scale - pimage->get_width()/2, (height/2)/scale - pimage->get_height()/2);
+	cr->rectangle(0, 0, get_allocation().get_width() / scale, get_allocation().get_width()/scale);
 
 	cr->paint();
+	return true;
+}
+
+bool MyArea::on_scroll_event(GdkEventScroll *ev){
+	//update scale according to mouse scrolling
+	scale -= ev->delta_y / 10;
+	
+	//no more scaling below 0.5
+	if (scale < 0.5)
+		scale = 0.5;
+	else if (scale > 2)
+		scale = 2;
+		
+	std::cout << scale << std::endl;
+	std::cout.flush();
+	
+	//update drawing
+	queue_draw();
+	
+	//there is probably a good reason to do this
 	return true;
 }
 
