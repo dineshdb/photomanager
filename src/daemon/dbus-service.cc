@@ -43,7 +43,7 @@ void on_method_call(
   } else if( method_name == "GetPhotos") {
   		
   		DirectoryScanner scanner;
-  		scanner.addFolder(Glib::get_home_dir() + "/Pictures");
+  		scanner.addFolder(Glib::get_home_dir() + "/Pictures/test");
   		scanner.start();
   		const std::vector<Glib::ustring> file_names = scanner.getFiles();
   		
