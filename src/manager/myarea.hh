@@ -11,10 +11,11 @@ class MyArea : public Gtk::DrawingArea{
 	    MyArea();
 	    void set_image(Glib::ustring image);
 		virtual ~MyArea();
+		
+		Glib::RefPtr<Gdk::Pixbuf> pimage;
 
 	protected:
 		double scale;
-		Glib::RefPtr<Gdk::Pixbuf> pimage;
 	
 		//override default signal handler
 		bool on_draw(const Cairo::RefPtr<Cairo::Context>& cr) override;
