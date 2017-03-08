@@ -44,6 +44,34 @@ void scanFile(Glib::ustring &filename){
   cout << endl;
   
 }
+
+// a function that returns the extension of a file
+Glib::ustring getFileExt(const Glib::ustring& s) {
+
+  size_t i = s.rfind('.', s.length());
+  if (i != Glib::ustring::npos) {
+  	return(s.substr(i+1, s.length() - i));
+  }
+  // Glib::ustring::npos is constant (representing -1)
+  // returned by method find when the pattern was not found
+  return("");
+}
+
+// a function that returns the supported extensions
+std::vector<Glib::ustring> getSupportedExts(){
+	
+	std::vector<Gdk::PixbufFormat> pixbuf_formats = Gdk::Pixbuf::get_formats();
+	std::vector<Glib::ustring> extensions;
+	for (Gdk::PixbufFormat pf : pixbuf_formats)
+	{
+		auto a = pf.get_extensions();
+		// append to extensions vector
+		extensions.insert(extensions.end(), a.begin(), a.end());
+	}
+	
+	return extensions;
+}
+
 void scanFolders(){
   // TODO Diff these files with database, then patch the database with new info.
   DirectoryScanner scanner;
@@ -51,11 +79,25 @@ void scanFolders(){
   scanner.start();
   std::vector<Glib::ustring> files = scanner.getFiles();
   std::vector<Glib::ustring> newFiles;
+  
+  std::vector<Glib::ustring> ext = getSupportedExts();
+  
+  std::vector<Glib::ustring>::iterator search_ext;
+  std::vector<Glib::ustring>::iterator iter;
 
-  for(auto file : files){
-    scanFile(file);
+  for(iter = files.begin(); iter != files.end(); ++iter){
+  	search_ext = find(ext.begin(), ext.end(), getFileExt(*iter));
+  	if (search_ext != ext.end()){
+		// extension found
+		scanFile(*iter);
+  	} else {
+		std::cout << "Not supported file "<< *iter << std::endl;
+		// remove the file
+		files.erase(iter);
+  	}
   }  
 }
+
 int main(int argc, char *argv[]) {
   std::locale::global(std::locale(""));
   Gnome::Gda::init();
