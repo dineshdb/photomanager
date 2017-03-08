@@ -39,6 +39,17 @@
       </packing>
     </child>
     <child>
+      <object class="GtkButton" id="rotate">
+        <property name="label" translatable="yes">90+</property>
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+        <property name="receives_default">True</property>
+      </object>
+      <packing>
+        <property name="position">3</property>
+      </packing>
+    </child>
+    <child>
       <object class="GtkSearchEntry" id="searchEntry">
         <property name="visible">True</property>
         <property name="can_focus">True</property>
