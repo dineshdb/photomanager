@@ -36,7 +36,7 @@ public:
     void on_my_custom_item_activated(const Glib::ustring& item_name);
     bool on_eventbox_button_press(GdkEventButton* button, Glib::ustring file/*Glib::RefPtr<Gdk::Pixbuf>& pimage*/);
 	void on_back_button_clicked();    
-	void on_rotate_button_clicked(Glib::RefPtr<Gdk::Pixbuf> m_Pimage); 
+	void on_rotate_button_clicked(); 
 };
 
 // destructor here
@@ -79,6 +79,7 @@ MainWindow::MainWindow() : mainWindowGlade("src/manager/gui.glade")
     left->set_sensitive(false);
     rotate->set_sensitive(false);
     left->signal_clicked().connect(sigc::mem_fun(*this, &MainWindow::on_back_button_clicked));
+    rotate->signal_clicked().connect(sigc::mem_fun(*this, &MainWindow::on_rotate_button_clicked));
     
     appWindow->set_titlebar(*headerBar);
     appWindow->set_default_size(1110, 700);
@@ -189,9 +190,10 @@ void MainWindow::on_back_button_clicked()
 
 
 // signal handlers from here
-void MainWindow::on_rotate_button_clicked(Glib::RefPtr<Gdk::Pixbuf> m_Pimage)
+void MainWindow::on_rotate_button_clicked()
 {
-	m_Pimage = m_Pimage->rotate_simple((Gdk::PixbufRotation)90);
+	area.pimage = area.pimage->rotate_simple(Gdk::PIXBUF_ROTATE_CLOCKWISE);
+	area.queue_draw();
 	std::cout << "Rotate button clicked " << std::endl;
 }
 
