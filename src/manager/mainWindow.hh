@@ -13,6 +13,7 @@ class MainWindow
 protected:
     Gtk::HeaderBar *headerBar = nullptr;
     Gtk::Button *left = nullptr;
+    Gtk::Button *rotate = nullptr;
     Gtk::SearchEntry *searchEntry = nullptr;
     Gtk::AppChooserButton *appChooserButton = nullptr;
     Gtk::Box *box = nullptr;
@@ -35,6 +36,7 @@ public:
     void on_my_custom_item_activated(const Glib::ustring& item_name);
     bool on_eventbox_button_press(GdkEventButton* button, Glib::ustring file/*Glib::RefPtr<Gdk::Pixbuf>& pimage*/);
 	void on_back_button_clicked();    
+	void on_rotate_button_clicked(Glib::RefPtr<Gdk::Pixbuf> m_Pimage); 
 };
 
 // destructor here
@@ -69,11 +71,13 @@ MainWindow::MainWindow() : mainWindowGlade("src/manager/gui.glade")
 	refBuilder->get_widget("applicationWindow", appWindow);
     refBuilder->get_widget("headerBar", headerBar);
     refBuilder->get_widget("left", left);
+    refBuilder->get_widget("rotate", rotate);
     refBuilder->get_widget("searchEntry", searchEntry);
     refBuilder->get_widget("appChooserButton", appChooserButton);
     refBuilder->get_widget("box", box);
     
     left->set_sensitive(false);
+    rotate->set_sensitive(false);
     left->signal_clicked().connect(sigc::mem_fun(*this, &MainWindow::on_back_button_clicked));
     
     appWindow->set_titlebar(*headerBar);
@@ -171,17 +175,34 @@ void MainWindow::load_single_image(Glib::ustring image)
 
 void MainWindow::on_back_button_clicked()
 {
-	this->load_scrolled_window();
+	// TODO: review editing of titlebar
+	headerBar->add(*appChooserButton);
+	headerBar->remove(*left);
+	headerBar->remove(*rotate);
+	
 	left->set_sensitive(false);
+	rotate->set_sensitive(false);
+	
+	this->load_scrolled_window();
 	headerBar->set_title("Photo Manager");
 }
 
 
 // signal handlers from here
+void MainWindow::on_rotate_button_clicked(Glib::RefPtr<Gdk::Pixbuf> m_Pimage)
+{
+	m_Pimage = m_Pimage->rotate_simple((Gdk::PixbufRotation)90);
+	std::cout << "Rotate button clicked " << std::endl;
+}
+
+
 void MainWindow::on_my_custom_item_activated(const Glib::ustring& item_name)
 {
     if (item_name.compare("photosButton") == 0)
     {
+	    // TODO: review editing of titlebar
+    	headerBar->remove(*left);
+    	headerBar->remove(*rotate);
 		this->load_scrolled_window();
     }
     else if (item_name.compare("peopleButton"))
@@ -210,9 +231,12 @@ bool MainWindow::on_eventbox_button_press(GdkEventButton* button, Glib::ustring 
 {
     if (button->type == GDK_DOUBLE_BUTTON_PRESS)
     {
-    	// activate the back button
+    	// TODO: review editing of titlebar;
+    	headerBar->add(*left);
+    	headerBar->add(*rotate);
     	left->set_sensitive(true);
-    	headerBar->set_title(image);
+    	rotate->set_sensitive(true);
+    	headerBar->remove(*appChooserButton);
     	
     	auto children = box->get_children();
     	for (auto child : children)
