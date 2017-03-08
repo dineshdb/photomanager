@@ -1,5 +1,6 @@
 #include "dbus-service.hh"
 #include "DirectoryScanner.hh"
+#include "recognizer.hh"
 
 static Glib::TimeVal curr_alarm;
 
@@ -40,18 +41,13 @@ void on_method_call(
       invocation->return_error(error);
     }
     
-  } else if( method_name == "GetPhotos") {
+  } else if( method_name == "GetPhotos") { 		
+		auto files = Recognizer::getFiles();
+		// TODO Serialize this vector and send it to client.
+  		//const auto photos = Glib::Variant<std::vector<Glib::ustring>>::create(file_names);
+  		//auto response = Glib::VariantContainerBase::create_tuple(photos);
+  		//invocation->return_value(response);
   		
-  		DirectoryScanner scanner;
-  		scanner.addFolder(Glib::get_home_dir() + "/Pictures/test");
-  		scanner.start();
-  		const std::vector<Glib::ustring> file_names = scanner.getFiles();
-  		
-  		std::cout << "Called method GetPhotos inside dbus-service " << std::endl;
-  		
-  		const auto photos = Glib::Variant<std::vector<Glib::ustring>>::create(file_names);
-  		Glib::VariantContainerBase response = Glib::VariantContainerBase::create_tuple(photos);
-  		invocation->return_value(response);
   		
   } else if( method_name == "GetPeople") {
   

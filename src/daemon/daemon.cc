@@ -3,8 +3,6 @@
 
 #include <libgdamm.h>
 #include <gtkmm.h>
-#include <mutex>
-#include <thread>
 
 #include "dbus-service.hh"
 #include "recognizer.hh"
@@ -36,20 +34,6 @@ using namespace std;
  
 Glib::RefPtr<Gnome::Gda::Connection> conn;
 
-static mutex dbLock;
-
-void scanFolders(){
-  Recognizer r;
-  // TODO Diff these files with database, then patch the database with new info.
-  DirectoryScanner scanner;
-  scanner.addFolder(Glib::get_home_dir() + "/Pictures/test");
-  scanner.start();
-  std::vector<Glib::ustring> files = scanner.getFiles();
-
-  for(auto file : files){
-	r.analyzePhoto(file);
-  }
-}
 int main(int argc, char *argv[]) {
   std::locale::global(std::locale(""));
   Gnome::Gda::init();
@@ -60,9 +44,12 @@ int main(int argc, char *argv[]) {
   			(const gchar *) "",
 		    (Gnome::Gda::ConnectionOptions) 0
   		);
-  
-  thread t(scanFolders);  // Runs scanning in another thread  
   		
+  Recognizer r;
+  
+
+  thread t(Recognizer::scanFolders);
+  
   CommandParser c;
   c.parse(argc, argv);
   t.join();

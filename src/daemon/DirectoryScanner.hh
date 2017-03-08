@@ -6,20 +6,29 @@
 #include <glibmm.h>
 
 class DirectoryScanner {
-  std::stack<Glib::ustring> directories;
+  std::vector<Glib::ustring> directories;
   std::vector<Glib::ustring> files;
 
 public:
-  DirectoryScanner(){}
+  DirectoryScanner(){
+  
+  }
+  DirectoryScanner(Glib::ustring &folder){
+    directories.push_back(folder);
+  }
+  
+  DirectoryScanner(std::vector<Glib::ustring> &folders){
+    directories = folders;
+  }
   
   void addFolder(Glib::ustring dir){
-    directories.push(dir);
+    directories.push_back(dir);
   }
   
   void start(){
     while(directories.size() != 0){
-      Glib::ustring dirname = directories.top();
-      directories.pop();
+      Glib::ustring dirname = directories.back();
+      directories.pop_back();
       Glib::Dir dir(dirname);
       
       Glib::ustring entry;
