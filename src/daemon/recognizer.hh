@@ -20,24 +20,23 @@ using namespace std;
 
 namespace fs = boost::filesystem;
 
-class Recognizer {
-
+namespace{
+static std::vector<ImageDetails> scannedFiles;
+static std::mutex scannedFilesLock;
 static std::vector<Glib::ustring> files;
 static std::mutex filesLock;
 
-static std::vector<ImageDetails> scannedFiles;
-static std::mutex scannedFilesLock;
   
 static Ptr<FaceRecognizer> model;
-static std::mutex modelLock;
-  
+ 
 static CascadeClassifier face_cascade;
 static String face_cascade_name ;
 static String recognizer_statefile;
 
 static bool isInitialized;
 
-
+}
+class Recognizer {
 public:
 
   Recognizer(){
@@ -46,6 +45,8 @@ public:
   
   static void init(){
     if(isInitialized) return;
+    
+    cout << "Initializing recognizer" << endl;
     
 	face_cascade_name = "haarcascade_frontalface_alt.xml";
 	recognizer_statefile = "lbh.xml";
@@ -94,46 +95,56 @@ public:
    	return image;
   }
 
-  static void scanFile(){
+  static void scanFile(int id){
       Recognizer r;
-	  Glib::ustring filename;
-	  {
-		std::lock_guard<mutex> l(filesLock);
-		if(files.size() == 0){
-		  cout << "0 files left, exiting"<<endl;
-		  return;
-		}
+      while(true){
+		  Glib::ustring filename;
+		  {
+			std::lock_guard<mutex> l(filesLock);
+			if(files.size() == 0){
+			  return;
+			}
 		
-		filename = files.back();
-		files.pop_back();
-	  }
-	
-	  // Analyze photo here  
-	  auto details = r.analyzePhoto(filename);  
-	  		  
-	  {
-		std::lock_guard<mutex> l(scannedFilesLock);
-		scannedFiles.push_back(details);
-		
-		// TODO Save the result to database
-	  }
+			filename = files.back();
+			files.pop_back();
+			cout << "Scanning :"<< id << filename<<endl;
+		  }	
+		  // Analyze photo here 
+		    auto details = r.analyzePhoto(filename);
+		  
+		  		  
+		  {
+			std::lock_guard<mutex> l(scannedFilesLock);
+			scannedFiles.push_back(details);
+			cout << "Scanned  :" << id << filename << endl;
+			// TODO Save the result to database
+		  }      
+      }
   }
   
-  static void scanFolders(std::vector<Glib::ustring> &folders){
+  static void scanFolders(){
+      cout << "got here"<<endl;
+      std::vector<Glib::ustring> folders;
+      folders.push_back(Glib::get_home_dir() + "/Pictures/test");
 	  DirectoryScanner s(folders);
 	  s.start();
 	  // TODO Diff the result with preprocessed files
-	  files = s.getFiles(); // TODO Do this scanning in different thread
-
+	  files = s.getFiles(); 
+	  
 	  int numOfThreads = 4;// TODO Remove this hardcoded number with number of total cores in CPU
 	  thread *t[numOfThreads];
 
 	  for(int i=0; i < numOfThreads; i++){
-		t[i] = new thread(scanFile);
+		t[i] = new thread(scanFile, i);
 	  }
 	  for(int i=0; i < numOfThreads; i++){
 		t[i]->join();
 	  }    
+  }
+  
+  static std::vector<ImageDetails> getFiles(){
+    lock_guard<mutex> l(scannedFilesLock);
+    return scannedFiles; 
   }
 
 };

@@ -9,11 +9,17 @@
 #include <opencv2/objdetect/objdetect.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
-typedef struct _FaceDetail {
+using namespace Glib;
+// "(sa((ii)ii)as)
+
+class FaceDetail {
+public:
   cv::Rect bounds;
   int label;
   int confidence;
-} FaceDetail;
+  
+  FaceDetail(cv::Rect b, int l, int c): bounds(b), label(l), confidence(c){}
+};
 
 class ImageDetails {
 
@@ -34,6 +40,9 @@ public:
   void addTag(Glib::ustring &tag){
     // TODO Check whether the tag already exists
     tags.push_back(tag);
+  }
+  
+  Glib::VariantContainerBase getVariant(){
   }
 };
 

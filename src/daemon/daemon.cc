@@ -44,9 +44,15 @@ int main(int argc, char *argv[]) {
   			(const gchar *) "",
 		    (Gnome::Gda::ConnectionOptions) 0
   		);
+  		
+  Recognizer r;
+  
+
+  thread t(Recognizer::scanFolders);
   
   CommandParser c;
   c.parse(argc, argv);
+  t.join();
   return 0;
 }
 
