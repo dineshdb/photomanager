@@ -18,7 +18,7 @@ namespace {
 	"      <arg type='s' name='iso8601' direction='in'/>"
     "    </method>"
     "    <method name='GetPhotos'>"
-    "      <arg type='(sa((ii)ii)as)' direction='out' />"
+    "      <arg type='(sa((iiii)ii)as)' direction='out' />"
     "    </method>"
 	"  </interface>"
     "</node>";

@@ -10,7 +10,7 @@
 #include <opencv2/imgproc/imgproc.hpp>
 
 using namespace Glib;
-// "(sa((ii)ii)as)
+// "(sa((iiii)ii)as)
 
 class FaceDetail {
 public:
@@ -43,6 +43,29 @@ public:
   }
   
   Glib::VariantContainerBase getVariant(){
+  	Glib::ustring literally_crap = "";				// an ImageDetails contains path(ustring), tags(vector of strings)
+  													// faces(vector of integers)
+		literally_crap += path;
+		
+		// get the face details
+		for (auto face_detail : faces)
+		{
+			// changing integer into strings
+			literally_crap += Glib::ustring::format(face_detail.bounds.x);
+			literally_crap += Glib::ustring::format(face_detail.bounds.y);
+			literally_crap += Glib::ustring::format(face_detail.bounds.width);
+			literally_crap += Glib::ustring::format(face_detail.bounds.height);
+		}
+		
+		// get the tags
+		for (auto tag : tags)
+		{
+			literally_crap += tag;
+		}		
+  	
+  	auto crap_variant = Glib::Variant<Glib::ustring>::create(literally_crap);
+  	auto crap_variant_base = Glib::VariantContainerBase::create_tuple(crap_variant);
+  	return crap_variant_base;
   }
 };
 
