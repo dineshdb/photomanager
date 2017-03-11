@@ -45,22 +45,26 @@ public:
   Glib::ustring getString(){
   	Glib::ustring literally_crap = "";				// an ImageDetails contains path(ustring), tags(vector of strings)
   													// faces(vector of integers)
-		literally_crap += path + "#";				// space " " is used as a delimiter here
+		literally_crap += path + "#";				// space "#" is used as a delimiter here
 		
 		// get the face details
 		for (auto face_detail : faces)
 		{
 			// changing integer into strings
-			literally_crap += Glib::ustring::format(face_detail.bounds.x);
-			literally_crap += Glib::ustring::format(face_detail.bounds.y);
-			literally_crap += Glib::ustring::format(face_detail.bounds.width);
-			literally_crap += Glib::ustring::format(face_detail.bounds.height);
+			literally_crap += Glib::ustring::format(face_detail.bounds.x) + '$';		// delimiter at the end of each integer
+			literally_crap += Glib::ustring::format(face_detail.bounds.y) + '$';
+			literally_crap += Glib::ustring::format(face_detail.bounds.width) + '$';
+			literally_crap += Glib::ustring::format(face_detail.bounds.height) + '$';
+			literally_crap += Glib::ustring::format(face_detail.label) + '$';
+			literally_crap += Glib::ustring::format(face_detail.confidence) + '$';
+			literally_crap += '%';														// a delimiter for each face
 		}
 		
+		literally_crap += "#";						// delimiter at the beginning of tags
 		// get the tags
 		for (auto tag : tags)
 		{
-			literally_crap += tag;
+			literally_crap += tag + "*";			// delimiter at the end of each tag
 		}		
   	
   	return literally_crap;
