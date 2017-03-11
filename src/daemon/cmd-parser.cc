@@ -3,8 +3,8 @@ void predictPhotos(string filename){
 }
 
 void updatePrediction(string filename, int userid){
-//	Recognizer r;
-//	Mat photo = r.loadPhotoBW(filename);
+	Recognizer r;
+	Mat photo = r.loadPhotoBW(filename);
 //	std::vector<Rect> faces = r.getFaces(photo);
 //	cout << "There ar "<< faces.size() << " photos." << endl;
 	int i=1, id;
@@ -47,7 +47,9 @@ int CommandParser::parse(int argc, char **argv){
 		if (vm.count("help"))
 		  std::cout << desc << '\n';
 		else if (vm.count("daemon")){
+			thread t(Recognizer::scanFolders);
 			dbus_init();
+			t.join();
 		} else if (vm.count("update")){
 			int userid = vm["userid"].as<int>();
 			string filename = vm["update"].as<string>();

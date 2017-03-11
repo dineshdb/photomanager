@@ -45,14 +45,10 @@ int main(int argc, char *argv[]) {
 		    (Gnome::Gda::ConnectionOptions) 0
   		);
   		
-  Recognizer r;
-  
-
-  thread t(Recognizer::scanFolders);
-  
+  Recognizer r;	// Initialization of recognizer
+   
   CommandParser c;
   c.parse(argc, argv);
-  t.join();
   return 0;
 }
 
