@@ -48,6 +48,17 @@ void on_method_call(
   		//auto response = Glib::VariantContainerBase::create_tuple(photos);
   		//invocation->return_value(response);
   		
+  		// files is of type std::vector<ImageDetails>
+  		std::vector<Glib::ustring> crap_container;
+  		for (auto file : files)
+  		{
+  			// file is of type ImageDetails
+  			crap_container.push_back(file.getString());
+  		}
+  		
+  		const auto crap_variant = Glib::Variant<std::vector<Glib::ustring>>::create(crap_container);
+  		Glib::VariantContainerBase crap_variant_base = Glib::VariantContainerBase::create_tuple(crap_variant);
+  		invocation->return_value(crap_variant_base);
   		
   } else if( method_name == "GetPeople") {
   

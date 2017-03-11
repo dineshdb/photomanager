@@ -128,7 +128,14 @@ void MainWindow::load_scrolled_window()
 		Glib::RefPtr<Gdk::Pixbuf> ptr_image;
 		try
 		{
-			ptr_image = Gdk::Pixbuf::create_from_file(listOfFiles[i]);
+			// find the space delimiter and obtain only the path of file for now
+			Glib::ustring file_name;
+			
+			std::size_t found = listOfFiles[i].find('#');
+			if (found != std::string::npos)
+				file_name = listOfFiles[i].substr(0, found);
+			
+			ptr_image = Gdk::Pixbuf::create_from_file(file_name);
 		}
 		catch (const Gio::ResourceError& ex)
 		{

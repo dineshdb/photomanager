@@ -42,10 +42,10 @@ public:
     tags.push_back(tag);
   }
   
-  Glib::VariantContainerBase getVariant(){
+  Glib::ustring getString(){
   	Glib::ustring literally_crap = "";				// an ImageDetails contains path(ustring), tags(vector of strings)
   													// faces(vector of integers)
-		literally_crap += path;
+		literally_crap += path + "#";				// space " " is used as a delimiter here
 		
 		// get the face details
 		for (auto face_detail : faces)
@@ -63,9 +63,7 @@ public:
 			literally_crap += tag;
 		}		
   	
-  	auto crap_variant = Glib::Variant<Glib::ustring>::create(literally_crap);
-  	auto crap_variant_base = Glib::VariantContainerBase::create_tuple(crap_variant);
-  	return crap_variant_base;
+  	return literally_crap;
   }
 };
 
