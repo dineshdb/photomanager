@@ -22,12 +22,15 @@ public:
 };
 
 class ImageDetails {
+public:
 
   Glib::ustring path;
   std::vector<FaceDetail> faces;
   std::vector<std::string> tags;
   
-public:
+
+
+  ImageDetails(){}
   
   ImageDetails(Glib::ustring filename){
   	 path = filename;

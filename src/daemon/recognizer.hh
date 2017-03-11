@@ -9,6 +9,7 @@
 
 #include <mutex>
 #include <thread>
+#include <map>
 
 #include <boost/filesystem.hpp>
 
@@ -20,63 +21,33 @@ using namespace std;
 
 namespace fs = boost::filesystem;
 
-namespace{
-static std::vector<ImageDetails> scannedFiles;
-static std::mutex scannedFilesLock;
-  
-static Ptr<FaceRecognizer> model;
- 
-static CascadeClassifier face_cascade;
-static String face_cascade_name ;
-static String recognizer_statefile;
+const static String face_cascade_name = "haarcascade_frontalface_alt.xml";
+const static String recognizer_statefile = "lbh.xml";
 
-static bool isInitialized;
-
-}
 class Recognizer {
-public:
-
-  Recognizer(){
-    init();
-  }
   
-  static void init(){
-    if(isInitialized) return;
-    
-    cout << "Initializing recognizer" << endl;
-    
-	face_cascade_name = "haarcascade_frontalface_alt.xml";
-	recognizer_statefile = "lbh.xml";
+  Ptr<FaceRecognizer> model;
+  CascadeClassifier face_cascade;
+
+public:
+  Recognizer(){
+
 	if( !face_cascade.load( face_cascade_name ) ) {
 		cerr << "Error loading face cascade" << endl;
-		// TODO : Implement backup plan for it.
 	}
 	model = cv::createLBPHFaceRecognizer();
 	if(fs::exists(recognizer_statefile)){
 		model->load(recognizer_statefile);
-	}
-	isInitialized = true;
+	}  
   }
-
-  static std::vector<Rect> getFaces(Mat frame){
-	std::vector<Rect> faces;
-	equalizeHist( frame, frame );
-   	face_cascade.detectMultiScale( frame, faces, 1.1, 2, 0|CASCADE_SCALE_IMAGE, Size(30, 30) );
-	return faces;
-  }
-
-  static Mat cropFace(Mat image, Rect face){
+  Mat cropFace(Mat image, Rect face){
 	Point tl(face.x, face.y);
 	Point dr(face.x + face.width, face.y + face.height);
 	Rect f(tl, dr);
 	Mat croppedFace = image(f);
 	return croppedFace;
   }
-
-  void updatePhoto(vector<Mat> faces, vector<int> ids){
-	model->update(faces, ids);
-  }
-
+  
   ImageDetails analyzePhoto(Glib::ustring &filename){
 	Mat frame = imread(filename, cv::IMREAD_GRAYSCALE);
    	auto faces = getFaces(frame);
@@ -91,32 +62,21 @@ public:
    	}
    	return image;
   }
-
-  static void scanFolders(){
-      std::vector<Glib::ustring> folders;
-      folders.push_back(Glib::get_home_dir() + "/Pictures/test");
-	  DirectoryScanner s(folders);
-	  s.start();
-	  // TODO Diff the result with preprocessed files
-	  auto files = s.getFiles(); 
-	  Recognizer r;
-	  
-	  for( auto file : files){
-	    auto details = r.analyzePhoto(file);
-		  {
-			std::lock_guard<mutex> l(scannedFilesLock);
-			scannedFiles.push_back(details);
-			cout << "Scanned  :" << file << endl;
-			// TODO Save the result to database
-		  }
-	  }
-	  cout << "Finished scanning files" << endl;
+  
+  void updatePhoto(vector<Mat> faces, vector<int> ids){
+	model->update(faces, ids);
   }
   
-  static std::vector<ImageDetails> getFiles(){
-    lock_guard<mutex> l(scannedFilesLock);
-    return scannedFiles; 
+  void save(){
+  	model->save(recognizer_statefile);
   }
 
+  std::vector<Rect> getFaces(Mat frame){
+	std::vector<Rect> faces;
+	equalizeHist( frame, frame );
+   	face_cascade.detectMultiScale( frame, faces, 1.1, 2, 0|CASCADE_SCALE_IMAGE, Size(30, 30) );
+	return faces;
+  }
 };
+
 #endif

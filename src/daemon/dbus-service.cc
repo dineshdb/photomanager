@@ -1,6 +1,7 @@
 #include "dbus-service.hh"
 #include "DirectoryScanner.hh"
 #include "recognizer.hh"
+#include "cmd-parser.hh"
 
 static Glib::TimeVal curr_alarm;
 
@@ -42,7 +43,7 @@ void on_method_call(
     }
     
   } else if( method_name == "GetPhotos") { 		
-		auto files = Recognizer::getFiles();
+		auto files = getFiles();
 		// TODO Serialize this vector and send it to client.
   		//const auto photos = Glib::Variant<std::vector<Glib::ustring>>::create(file_names);
   		//auto response = Glib::VariantContainerBase::create_tuple(photos);
