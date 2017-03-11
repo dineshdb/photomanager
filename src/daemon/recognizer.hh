@@ -23,9 +23,6 @@ namespace fs = boost::filesystem;
 namespace{
 static std::vector<ImageDetails> scannedFiles;
 static std::mutex scannedFilesLock;
-static std::vector<Glib::ustring> files;
-static std::mutex filesLock;
-
   
 static Ptr<FaceRecognizer> model;
  
@@ -95,51 +92,25 @@ public:
    	return image;
   }
 
-  static void scanFile(int id){
-      Recognizer r;
-      while(true){
-		  Glib::ustring filename;
-		  {
-			std::lock_guard<mutex> l(filesLock);
-			if(files.size() == 0){
-			  return;
-			}
-		
-			filename = files.back();
-			files.pop_back();
-			cout << "Scanning :"<< id << filename<<endl;
-		  }	
-		  // Analyze photo here 
-		    auto details = r.analyzePhoto(filename);
-		  
-		  		  
-		  {
-			std::lock_guard<mutex> l(scannedFilesLock);
-			scannedFiles.push_back(details);
-			cout << "Scanned  :" << id << filename << endl;
-			// TODO Save the result to database
-		  }      
-      }
-  }
-  
   static void scanFolders(){
-      cout << "got here"<<endl;
       std::vector<Glib::ustring> folders;
       folders.push_back(Glib::get_home_dir() + "/Pictures/test");
 	  DirectoryScanner s(folders);
 	  s.start();
 	  // TODO Diff the result with preprocessed files
-	  files = s.getFiles(); 
+	  auto files = s.getFiles(); 
+	  Recognizer r;
 	  
-	  int numOfThreads = 4;// TODO Remove this hardcoded number with number of total cores in CPU
-	  thread *t[numOfThreads];
-
-	  for(int i=0; i < numOfThreads; i++){
-		t[i] = new thread(scanFile, i);
+	  for( auto file : files){
+	    auto details = r.analyzePhoto(file);
+		  {
+			std::lock_guard<mutex> l(scannedFilesLock);
+			scannedFiles.push_back(details);
+			cout << "Scanned  :" << file << endl;
+			// TODO Save the result to database
+		  }
 	  }
-	  for(int i=0; i < numOfThreads; i++){
-		t[i]->join();
-	  }    
+	  cout << "Finished scanning files" << endl;
   }
   
   static std::vector<ImageDetails> getFiles(){

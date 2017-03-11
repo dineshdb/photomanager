@@ -4,7 +4,7 @@ void predictPhotos(string filename){
 
 void updatePrediction(string filename, int userid){
 	Recognizer r;
-	Mat photo = r.loadPhotoBW(filename);
+//	Mat photo = r.loadPhotoBW(filename);
 //	std::vector<Rect> faces = r.getFaces(photo);
 //	cout << "There ar "<< faces.size() << " photos." << endl;
 	int i=1, id;
