@@ -5,8 +5,22 @@
 #include <giomm.h>
 #include <glibmm.h>
 #include <iostream>
+#include <cstdlib>
+#include "../daemon/ImageDetails.hh"
 #include "myarea.hh"
 #include "proxy.hh"
+
+std::vector<Glib::ustring> get_various_strings(Glib::ustring& general_string, char c)
+{
+	std::size_t general_pos;
+	std::vector<Glib::ustring> general_vector;
+	while ((general_pos = general_string.find(c)) != std::string::npos)
+	{
+		general_vector.push_back(general_string.substr(0, general_pos - 1));
+		general_string = general_string.substr(general_pos + 1);	
+	}
+	return general_vector;
+}
 
 class MainWindow
 {
@@ -128,12 +142,58 @@ void MainWindow::load_scrolled_window()
 		Glib::RefPtr<Gdk::Pixbuf> ptr_image;
 		try
 		{
-			// find the space delimiter and obtain only the path of file for now
 			Glib::ustring file_name;
+			std::vector<Glib::ustring> tags;
+			std::vector<FaceDetail> faces;
 			
-			std::size_t found = listOfFiles[i].find('#');
-			if (found != std::string::npos)
-				file_name = listOfFiles[i].substr(0, found);
+			// ------------------------------------------------
+			// find the space delimiter and obtain only the path of file for now
+			std::size_t path_pos = listOfFiles[i].find('#');
+			if (path_pos != std::string::npos)
+				file_name = listOfFiles[i].substr(0, path_pos);
+			
+			// ------------------------------------------------
+			// find the tags at the end of the string 
+			// find the last occurance of '#' delimiter
+			std::size_t	tags_pos = listOfFiles[i].rfind('#');
+			std::size_t individual_tag_pos;
+			Glib::ustring tags_string;
+			
+			if (tags_pos != std::string::npos)
+				tags_string = listOfFiles[i].substr(tags_pos + 1);		// extract until the end of the string
+			
+			tags = get_various_strings(tags_string, '*');
+			
+			//-------------------------------------------------
+			// get the integers out of string
+			std::vector<Glib::ustring> damn_integers;
+			std::size_t individual_int_pos;
+			Glib::ustring facedetails_string = listOfFiles[i].substr(path_pos + 1, tags_pos);
+			
+			std::size_t each_facedetail_pos;
+			std::vector<Glib::ustring> each_facedetail_string; 
+			
+			// find '%' because each facedetail ends with '%'
+			each_facedetail_string = get_various_strings(facedetails_string, '%');
+			
+			// find '$' because each integer ends with '$'
+			for (auto finally_int_string : each_facedetail_string)
+			{
+				damn_integers = get_various_strings(finally_int_string, '$');
+				// there are 6 integers x, y, width, length, label, confidence
+				faces.push_back(
+								FaceDetail(
+										   cv::Rect(
+													atoi(damn_integers[0].c_str()) /* x */, atoi(damn_integers[1].c_str()) /* y */, 
+													atoi(damn_integers[2].c_str())/*width*/, atoi(damn_integers[3].c_str()) /*length*/
+													), 
+													atoi(damn_integers[4].c_str()) /*label*/, 
+													atoi(damn_integers[5].c_str())/*confidence*/
+										  )
+								);
+			}
+			
+			//-------------------------------------------------
 			
 			ptr_image = Gdk::Pixbuf::create_from_file(file_name);
 		}
