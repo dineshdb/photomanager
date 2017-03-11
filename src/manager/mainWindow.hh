@@ -6,7 +6,7 @@
 #include <glibmm.h>
 #include <iostream>
 #include <cstdlib>
-#include "ImageDetails.hh"
+#include "../daemon/ImageDetails.hh"
 #include "myarea.hh"
 #include "proxy.hh"
 
@@ -16,7 +16,7 @@ std::vector<Glib::ustring> get_various_strings(Glib::ustring& general_string, ch
 	std::vector<Glib::ustring> general_vector;
 	while ((general_pos = general_string.find(c)) != std::string::npos)
 	{
-		general_vector.push_back(0, general_pos - 1);
+		general_vector.push_back(general_string.substr(0, general_pos - 1));
 		general_string = general_string.substr(general_pos + 1);	
 	}
 	return general_vector;
