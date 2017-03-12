@@ -7,75 +7,56 @@
 #include "dbus-service.hh"
 #include "recognizer.hh"
 
+extern FilesDatabase::FilesDatabase scannedFiles;
+
 namespace cmd= boost::program_options;
 
 using namespace std;
 
-namespace {
-	std::vector<ImageDetails> scannedFiles;
-	std::mutex scannedFilesLock;
 
-	vector<ImageDetails> getFiles(){
-	  lock_guard<mutex> l(scannedFilesLock);
-  	  return scannedFiles;
-	}
+void updatePrediction(Glib::ustring filename){
+	Recognizer r;
+	Mat frame = imread(filename, cv::IMREAD_GRAYSCALE);
+	auto faces = r.getFaces(frame);
+	vector<Mat> nfaces;
+	vector<int> nids;
 	
-	vector<Glib::ustring> getPeople(){
-		vector<Glib::ustring> people;
-		people.push_back("Dinesh");
-		people.push_back("Aashutosh");
-		return people;
+	cout << faces.size()<<endl;
+	for(auto face : faces){
+	    int id;
+	    	    
+		cout << "Enter face id for " << face;
+		cin >> id;
+		nfaces.push_back(r.cropFace(frame, face));
+		nids.push_back(id);			
 	}
+	r.updatePhoto(nfaces, nids);
+	r.save();
+}
 	
-	void updatePrediction(Glib::ustring filename){
-		Recognizer r;
-		Mat frame = imread(filename, cv::IMREAD_GRAYSCALE);
-		auto faces = r.getFaces(frame);
-		vector<Mat> nfaces;
-		vector<int> nids;
-		
-		cout << faces.size()<<endl;
-		for(auto face : faces){
-		    int id;
-		    double confidence;
-		    
-			cout << "Enter face id for " << face;
-			cin >> id;
-			nfaces.push_back(r.cropFace(frame, face));
-			nids.push_back(id);			
-		}
+void predictPhoto(Glib::ustring filename){
+	Recognizer r;
+	auto faceDetails = r.analyzePhoto(filename);
+	for(auto face : faceDetails.faces){
+		cout << face.bounds << " : " << face.label << ":"<< face.confidence << endl;
+	}
+}
+void scanFolders(){
+	std::vector<Glib::ustring> folders;
+	folders.push_back(Glib::get_home_dir() + "/Pictures/test");
+	DirectoryScanner s(folders);
+	s.start();
+	// TODO Diff the result with preprocessed files
+	auto files = s.getFiles(); 
+	Recognizer r;
+	 
+	for( auto file : files){
+	  auto details = r.analyzePhoto(file);
+	  scannedFiles.addFile(details);
+	}
 
-		r.updatePhoto(nfaces, nids);
-		r.save();
-	}
-	
-	void predictPhoto(Glib::ustring filename){
-		Recognizer r;
-		auto faceDetails = r.analyzePhoto(filename);
-		for(auto face : faceDetails.faces){
-			cout << face.bounds << " : " << face.label << ":"<< face.confidence << endl;
-		}
-	}
-	void scanFolders(){
-		std::vector<Glib::ustring> folders;
-		folders.push_back(Glib::get_home_dir() + "/Pictures/test");
-		DirectoryScanner s(folders);
-		s.start();
-		// TODO Diff the result with preprocessed files
-		auto files = s.getFiles(); 
-		Recognizer r;
-		 
-		for( auto file : files){
-		  auto details = r.analyzePhoto(file);
-		  {
-			std::lock_guard<mutex> l(scannedFilesLock);
-			scannedFiles.push_back(details);
-			cout << "Scanned  :" << file << endl;
-			// TODO Save the result to database
-		  }
-		}
-		cout << "Finished scanning files" << endl;
-	}
+	cout << "Finished scanning files" << endl;
+	cout << "Scanned "<< scannedFiles.size() << endl;
 }
 
 class CommandParser {
@@ -126,8 +107,5 @@ public:
 	  	}
 	  	return 0;
 	}
-	
-private:
-
 };
 #endif

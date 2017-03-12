@@ -1,14 +1,20 @@
 #include <iostream>
 #include <string>
 
+
 #include <libgdamm.h>
 #include <gtkmm.h>
 
+#include "FileDatabase.hh"
 #include "dbus-service.hh"
 #include "recognizer.hh"
 #include "cmd-parser.hh"
 #include "DirectoryScanner.hh"
 #include "ImageDetails.hh"
+
+Glib::RefPtr<Gnome::Gda::Connection> conn;
+FilesDatabase::FilesDatabase scannedFiles;
+
 
 // FIXME: Opencv methods don't work propely
 // TODO: Add interfaces, objects and methods to dbus
@@ -31,8 +37,7 @@ using namespace std;
  * To predict a photo, run `$ daemon -p <image>`
  *
  */
- 
-Glib::RefPtr<Gnome::Gda::Connection> conn;
+
 
 int main(int argc, char *argv[]) {
   std::locale::global(std::locale(""));
