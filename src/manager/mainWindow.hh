@@ -6,6 +6,7 @@
 #include <glibmm.h>
 #include <iostream>
 #include <cstdlib>
+#include <algorithm>
 #include "../daemon/ImageDetails.hh"
 #include "myarea.hh"
 #include "proxy.hh"
@@ -194,10 +195,18 @@ void MainWindow::load_scrolled_window()
 			{
 				damn_integers = get_various_strings(finally_int_string, '$');
 				// there are 6 integers x, y, width, length, label, confidence
+				
+				// remove comma from x co-ordinate
+				std::string x = damn_integers[0];
+				x.erase(std::remove(x.begin(), x.end(), ','), x.end());
+				
+				std::string y = damn_integers[1];
+				y.erase(std::remove(y.begin(), y.end(), ','), y.end());
+				
 				temp_faces.push_back(
 								FaceDetail(
 										   cv::Rect(
-													atoi(damn_integers[0].c_str()) /* x */, atoi(damn_integers[1].c_str()) /* y */, 
+													atoi(x.c_str()) /* x */, atoi(y.c_str()) /* y */, 
 													atoi(damn_integers[2].c_str())/*width*/, atoi(damn_integers[3].c_str()) /*length*/
 													), 
 													atoi(damn_integers[4].c_str()) /*label*/, 
