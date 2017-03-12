@@ -16,7 +16,7 @@ std::vector<Glib::ustring> get_various_strings(Glib::ustring& general_string, ch
 	std::vector<Glib::ustring> general_vector;
 	while ((general_pos = general_string.find(c)) != std::string::npos)
 	{
-		general_vector.push_back(general_string.substr(0, general_pos - 1));
+		general_vector.push_back(general_string.substr(0, general_pos));
 		general_string = general_string.substr(general_pos + 1);	
 	}
 	return general_vector;
@@ -120,8 +120,12 @@ MainWindow::MainWindow() : mainWindowGlade("src/manager/gui.glade")
 void MainWindow::load_scrolled_window()
 {
 	ServerProxy sp;
-	auto listOfFiles = sp.getPhotos();	
-		    
+	auto listOfFiles = sp.getPhotos();
+	
+	Glib::ustring file_name;
+	std::vector<Glib::ustring> tags;
+	std::vector<FaceDetail> faces;
+	
     grid.set_column_spacing(10);
     grid.set_row_spacing(10);
 
@@ -142,9 +146,7 @@ void MainWindow::load_scrolled_window()
 		Glib::RefPtr<Gdk::Pixbuf> ptr_image;
 		try
 		{
-			Glib::ustring file_name;
-			std::vector<Glib::ustring> tags;
-			std::vector<FaceDetail> faces;
+		
 			
 			// ------------------------------------------------
 			// find the space delimiter and obtain only the path of file for now
@@ -152,23 +154,28 @@ void MainWindow::load_scrolled_window()
 			if (path_pos != std::string::npos)
 				file_name = listOfFiles[i].substr(0, path_pos);
 			
+			std::cout << file_name << std::endl;						// debug
+
 			// ------------------------------------------------
 			// find the tags at the end of the string 
 			// find the last occurance of '#' delimiter
 			std::size_t	tags_pos = listOfFiles[i].rfind('#');
-			std::size_t individual_tag_pos;
 			Glib::ustring tags_string;
 			
 			if (tags_pos != std::string::npos)
 				tags_string = listOfFiles[i].substr(tags_pos + 1);		// extract until the end of the string
 			
+			std::cout << tags_string << std::endl;						// debug
+			
 			tags = get_various_strings(tags_string, '*');
+			
+			for (auto tag : tags)
+				std::cout << tag << std::endl;							// debug
 			
 			//-------------------------------------------------
 			// get the integers out of string
 			std::vector<Glib::ustring> damn_integers;
-			std::size_t individual_int_pos;
-			Glib::ustring facedetails_string = listOfFiles[i].substr(path_pos + 1, tags_pos);
+			Glib::ustring facedetails_string = listOfFiles[i].substr(path_pos + 1, tags_pos - path_pos - 1);
 			
 			std::size_t each_facedetail_pos;
 			std::vector<Glib::ustring> each_facedetail_string; 
@@ -213,7 +220,7 @@ void MainWindow::load_scrolled_window()
 		eventBox->signal_button_press_event().connect(
 	                                               sigc::bind<Glib::ustring>(
                                                                 sigc::mem_fun(*this,
-                                                                 	&MainWindow::on_eventbox_button_press), listOfFiles[i]));
+                                                                 	&MainWindow::on_eventbox_button_press), file_name));
         
         eventBox->set_margin_top(10);
         eventBox->set_margin_bottom(10);
