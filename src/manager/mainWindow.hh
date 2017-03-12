@@ -34,9 +34,11 @@ protected:
     Gtk::Grid grid;
     Gtk::ScrolledWindow scrolledWindow;
     MyArea area;
+    Gtk::Statusbar statusBar;
 
     const Glib::RefPtr<Gtk::Builder> refBuilder;
     Glib::ustring mainWindowGlade;
+
 
 public:
     MainWindow();
@@ -50,7 +52,7 @@ public:
     void on_my_custom_item_activated(const Glib::ustring& item_name);
     bool on_eventbox_button_press(GdkEventButton* button, Glib::ustring file/*Glib::RefPtr<Gdk::Pixbuf>& pimage*/);
 	void on_back_button_clicked();    
-	void on_rotate_button_clicked(); 
+	void on_rotate_button_clicked();
 };
 
 // destructor here
@@ -122,7 +124,7 @@ void MainWindow::load_scrolled_window()
 	ServerProxy sp;
 	auto listOfFiles = sp.getPhotos();
 	
-	Glib::ustring file_name;
+    Glib::ustring file_name;
 	std::vector<Glib::ustring> tags;
 	std::vector<FaceDetail> faces;
 	
@@ -138,12 +140,14 @@ void MainWindow::load_scrolled_window()
     	for (auto child : children)
     		box->remove(*child);
     }
+    
     box->pack_start(scrolledWindow);
 
     int row = 0;
 	for (unsigned int i = 0; i < listOfFiles.size(); i++)
 	{
 		Glib::RefPtr<Gdk::Pixbuf> ptr_image;
+		Glib::ustring formatted;
 		try
 		{
 		
@@ -180,6 +184,8 @@ void MainWindow::load_scrolled_window()
 			std::size_t each_facedetail_pos;
 			std::vector<Glib::ustring> each_facedetail_string; 
 			
+			std::vector<FaceDetail> temp_faces;
+			
 			// find '%' because each facedetail ends with '%'
 			each_facedetail_string = get_various_strings(facedetails_string, '%');
 			
@@ -188,7 +194,7 @@ void MainWindow::load_scrolled_window()
 			{
 				damn_integers = get_various_strings(finally_int_string, '$');
 				// there are 6 integers x, y, width, length, label, confidence
-				faces.push_back(
+				temp_faces.push_back(
 								FaceDetail(
 										   cv::Rect(
 													atoi(damn_integers[0].c_str()) /* x */, atoi(damn_integers[1].c_str()) /* y */, 
@@ -199,6 +205,23 @@ void MainWindow::load_scrolled_window()
 										  )
 								);
 			}
+			faces = temp_faces;
+			//-------------------------------------------------
+			
+			// make formatted string here;
+			
+			formatted = "File: (" + file_name + ")";
+	
+			formatted += "Tags: ";
+			for (auto tag : tags)
+				formatted += tag + " ";
+	
+			formatted += "No. of faces: " + Glib::ustring::format(faces.size()) + " ";
+			for (auto face : faces)
+				formatted += "x=" + Glib::ustring::format(face.bounds.x) + " y=" + Glib::ustring::format(face.bounds.y) +
+				  	 " width=" + Glib::ustring::format(face.bounds.width) + " height=" + Glib::ustring::format(face.bounds.height) +
+				  	 " label=" + Glib::ustring::format(face.label) + " confidence=" + Glib::ustring::format(face.confidence);
+			
 			
 			//-------------------------------------------------
 			
@@ -220,7 +243,7 @@ void MainWindow::load_scrolled_window()
 		eventBox->signal_button_press_event().connect(
 	                                               sigc::bind<Glib::ustring>(
                                                                 sigc::mem_fun(*this,
-                                                                 	&MainWindow::on_eventbox_button_press), file_name));
+                                                                 	&MainWindow::on_eventbox_button_press), formatted));
         
         eventBox->set_margin_top(10);
         eventBox->set_margin_bottom(10);
@@ -242,8 +265,14 @@ void MainWindow::load_scrolled_window()
 
 void MainWindow::load_single_image(Glib::ustring image)
 {
-	this->area.set_image(image);
+	std::size_t front = image.find('(');
+	std::size_t back = image.find(')');
+	std::cout << image.substr(front + 1, back - front - 1) << std::endl;
+	this->area.set_image(image.substr(front + 1, back - front - 1));
 	box->pack_start(area);
+	box->pack_start(statusBar);
+	statusBar.remove_all_messages();
+	statusBar.push(image);
 	appWindow->show_all();
 }
 
