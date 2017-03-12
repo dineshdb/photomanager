@@ -5,6 +5,7 @@
 #include <iostream>
 #include <glibmm.h>
 #include <giomm.h>
+#include "../daemon/ImageDetails.hh"
 
 class MyArea : public Gtk::DrawingArea{
 	public:
@@ -13,9 +14,11 @@ class MyArea : public Gtk::DrawingArea{
 		virtual ~MyArea();
 		
 		Glib::RefPtr<Gdk::Pixbuf> pimage;
+		void set_coords(std::vector<FaceDetail>& coords);
 
 	protected:
 		double scale;
+		std::vector<FaceDetail> face_coords;
 	
 		//override default signal handler
 		bool on_draw(const Cairo::RefPtr<Cairo::Context>& cr) override;
@@ -29,6 +32,11 @@ void MyArea::set_image(Glib::ustring image){
       //show at lease a quarter of the image.
       if (pimage)
         set_size_request(pimage->get_width()/2, pimage->get_height()/2);
+}
+
+void MyArea::set_coords(std::vector<FaceDetail>& coords)
+{
+	face_coords = coords;
 }
 
 MyArea::MyArea()
@@ -57,8 +65,25 @@ bool MyArea::on_draw(const Cairo::RefPtr<Cairo::Context>& cr){
 	cr->scale(scale, scale);	
 	Gdk::Cairo::set_source_pixbuf(cr, pimage, (width/2)/scale - pimage->get_width()/2, (height/2)/scale - pimage->get_height()/2);
 	cr->rectangle(0, 0, get_allocation().get_width() / scale, get_allocation().get_width()/scale);
-
-	cr->paint();
+	
+	cr->fill();
+	cr->restore();
+	
+	cr->save();
+	cr->set_source_rgb(0.8, 0.0, 0.0); 		//red
+	for (auto face : face_coords)
+	{
+		cr->move_to(face.bounds.x / 2 / scale, face.bounds.y / 2 / scale);
+		cr->line_to(face.bounds.x / 2 / scale + face.bounds.width / 2 / scale, face.bounds.y / 2 / scale);
+		cr->line_to(face.bounds.x / 2 / scale + face.bounds.width / 2 / scale, face.bounds.y / 2 / scale + face.bounds.height / 2 / scale);
+		cr->line_to(face.bounds.x / 2 / scale, face.bounds.y / 2 / scale + face.bounds.height / 2 / scale);
+		cr->line_to(face.bounds.x / 2 / scale, face.bounds.y / 2 / scale);
+		cr->stroke();
+		cr->save();
+	}
+	
+	cr->restore();
+	//cr->paint();
 	return true;
 }
 

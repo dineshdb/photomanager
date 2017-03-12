@@ -45,13 +45,17 @@ public:
     MainWindow();
     virtual ~MainWindow();
     void load_scrolled_window(); 
-    void load_single_image(Glib::ustring image);
+    void load_single_image(Glib::ustring image, Glib::ustring format, std::vector<FaceDetail> faces);
 
 	Gtk::ApplicationWindow *appWindow = nullptr;
 
     // signal handlers
     void on_my_custom_item_activated(const Glib::ustring& item_name);
-    bool on_eventbox_button_press(GdkEventButton* button, Glib::ustring file/*Glib::RefPtr<Gdk::Pixbuf>& pimage*/);
+    bool on_eventbox_button_press(	GdkEventButton* button, 
+    								Glib::ustring file, 
+    								Glib::ustring formatted_string, 
+    								std::vector<FaceDetail> faces);
+	
 	void on_back_button_clicked();    
 	void on_rotate_button_clicked();
 };
@@ -125,10 +129,6 @@ void MainWindow::load_scrolled_window()
 	ServerProxy sp;
 	auto listOfFiles = sp.getPhotos();
 	
-    Glib::ustring file_name;
-	std::vector<Glib::ustring> tags;
-	std::vector<FaceDetail> faces;
-	
     grid.set_column_spacing(10);
     grid.set_row_spacing(10);
 
@@ -149,6 +149,10 @@ void MainWindow::load_scrolled_window()
 	{
 		Glib::RefPtr<Gdk::Pixbuf> ptr_image;
 		Glib::ustring formatted;
+		Glib::ustring file_name;
+		std::vector<Glib::ustring> tags;
+		std::vector<FaceDetail> faces;
+		
 		try
 		{
 		
@@ -219,7 +223,7 @@ void MainWindow::load_scrolled_window()
 			
 			// make formatted string here;
 			
-			formatted = "File: (" + file_name + ")";
+			formatted = "File: " + file_name + " ";
 	
 			formatted += "Tags: ";
 			for (auto tag : tags)
@@ -250,9 +254,10 @@ void MainWindow::load_scrolled_window()
 
 		eventBox->set_events(Gdk::BUTTON_PRESS_MASK);
 		eventBox->signal_button_press_event().connect(
-	                                               sigc::bind<Glib::ustring>(
+	                                               sigc::bind<Glib::ustring, Glib::ustring>(
                                                                 sigc::mem_fun(*this,
-                                                                 	&MainWindow::on_eventbox_button_press), formatted));
+                                                                 	&MainWindow::on_eventbox_button_press), 
+                                                                 			file_name, formatted, faces));
         
         eventBox->set_margin_top(10);
         eventBox->set_margin_bottom(10);
@@ -272,16 +277,21 @@ void MainWindow::load_scrolled_window()
         appWindow->show_all();
 }
 
-void MainWindow::load_single_image(Glib::ustring image)
+void MainWindow::load_single_image(Glib::ustring image, Glib::ustring format, std::vector<FaceDetail> faces)
 {
-	std::size_t front = image.find('(');
-	std::size_t back = image.find(')');
-	std::cout << image.substr(front + 1, back - front - 1) << std::endl;
-	this->area.set_image(image.substr(front + 1, back - front - 1));
+	//std::size_t front = image.find('(');
+	//std::size_t back = image.find(')');
+	//std::cout << image.substr(front + 1, back - front - 1) << std::endl;
+	//this->area.set_image(image.substr(front + 1, back - front - 1));
+	//std::vector<int> points;
+	//this->area.set_coords();
+	
+	this->area.set_image(image);
+	this->area.set_coords(faces);
 	box->pack_start(area);
 	box->pack_start(statusBar);
 	statusBar.remove_all_messages();
-	statusBar.push(image);
+	statusBar.push(format);
 	appWindow->show_all();
 }
 
@@ -341,7 +351,7 @@ void MainWindow::on_my_custom_item_activated(const Glib::ustring& item_name)
     }
 }
 
-bool MainWindow::on_eventbox_button_press(GdkEventButton* button, Glib::ustring image)
+bool MainWindow::on_eventbox_button_press(GdkEventButton* button, Glib::ustring image, Glib::ustring format, std::vector<FaceDetail> faces)
 {
     if (button->type == GDK_DOUBLE_BUTTON_PRESS)
     {
@@ -357,7 +367,7 @@ bool MainWindow::on_eventbox_button_press(GdkEventButton* button, Glib::ustring 
  			box->remove(*child);			
  			
     	std::cout << "removed scrolled window " << std::endl;
-        this->load_single_image(image);
+        this->load_single_image(image, format, faces);
         return true;
     }
     else if (button->type == GDK_BUTTON_PRESS)
