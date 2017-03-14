@@ -17,7 +17,7 @@ These instructions will get you a copy of the project up and running on your loc
 What things you need to install the software and how to install them
 
 * opencv
-* QT
+* Gtkmm
 
 ### Installing
 * Clone this repo using `git clone <repo_url>`
@@ -30,7 +30,7 @@ What things you need to install the software and how to install them
 
 ## Built With
 
-* QT 5.6 - The GUI Framework
+* gktmm-3.0 - The GUI Framework
 * OpenCV - The Computer Vision Library.
 * GNU/Linux - The Linux Environment
 
